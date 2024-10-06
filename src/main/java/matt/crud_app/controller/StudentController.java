@@ -20,6 +20,11 @@ import java.util.List;
             return "student added";
         }
 
+    @GetMapping("")
+    public String page(){
+        return "student_form.html";
+    }
+
         @GetMapping("/getAll")
     public List<Student> getAllStudents(){
             return studentService.getAllStudents();
