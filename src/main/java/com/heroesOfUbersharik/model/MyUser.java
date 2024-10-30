@@ -1,0 +1,149 @@
+package com.heroesOfUbersharik.model;
+
+import jakarta.persistence.*;
+import org.springframework.validation.annotation.Validated;
+
+//класс представляющий из себя сущность пользователя с параметрами которые должен иметь пользователь и которые есть в датабазе
+
+
+@Entity
+@Table(name = "hou_users_database")
+public class MyUser {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @Column(nullable = false, unique = true)
+    String email;
+
+    @Column(nullable = false)
+    String password;
+
+
+    @Column(name = "name",nullable = true)
+
+    String name;
+    @Column(name = "country",nullable = true)
+    String country;
+    @Column(name = "englishLvl", nullable = true)
+    String englishLvl;
+    @Column(name = "mainCareer", nullable = true)
+    String mainCareer;
+    @Column(name = "allCareers", nullable = true)
+    String allCareers;
+    @Column(name = "playingHours", nullable = true)
+    String playingHours;
+    @Column(name = "playingDays", nullable = true)
+    String playingDays;
+    @Column(name = "difficulty", nullable = true)
+    String difficulty;
+    @Column(name = "gameMode", nullable = true)
+    String gameMode;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;   // Исправлено присвоение
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password; // Исправлено присвоение
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getEnglishLvl() {
+        return englishLvl;
+    }
+
+    public void setEnglishLvl(String englishLvl) {
+        this.englishLvl = englishLvl;
+    }
+
+    public String getMainCareer() {
+        return mainCareer;
+    }
+
+    public void setMainCareer(String mainCareer) {
+        this.mainCareer = mainCareer;
+    }
+
+    public String getAllCareers() {
+        return allCareers;
+    }
+
+    public void setAllCareers(String allCareers) {
+        this.allCareers = allCareers;
+    }
+
+    public String getPlayingHours() {
+        return playingHours;
+    }
+
+    public void setPlayingHours(String playingHours) {
+        this.playingHours = playingHours;
+    }
+
+    public String getPlayingDays() {
+        return playingDays;
+    }
+
+    public void setPlayingDays(String playingDays) {
+        this.playingDays = playingDays;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(String gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", email='" + email + '\'' + // Исправлено
+                ", password='" + password + '\'' + // Исправлено
+                '}';
+    }
+}

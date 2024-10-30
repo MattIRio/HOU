@@ -1,0 +1,516 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+.wrapper {
+    display: flex;
+    justify-content: center; /* Центрирование по горизонтали, можно убрать если не нужно */
+    align-items: flex-end; /* Выровнять по нижнему краю страницы */
+    height: 100%;
+}
+.chat-container {
+    display: flex;
+    border: 1px solid #eaebf0;
+    border-radius: 5px;
+    width: 100%;
+    height: 680px; /* Вы можете изменить высоту на нужную */
+    margin-top: 70px;
+}
+
+.participants {
+    background-color: #f1f1f1;
+    padding: 10px;
+    height: 680px;
+    width: 200px; /* Ширина списка участников */
+    border-right: 1px solid #ddd;
+    overflow-y: auto; /* Прокрутка для участников */
+}
+
+.participants h3 {
+    margin-bottom: 15px; /* Увеличенный отступ под заголовком */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 20px; /* Увеличение размера шрифта заголовка */
+}
+
+.participants ul {
+    list-style-type: none;
+    padding: 0;
+}
+.event-message {
+    text-align: center; /* Центрируем текст */
+    margin: 10px 0; /* Отступы сверху и снизу */
+    font-style: italic; /* Курсив для текста */
+    color: gray; /* Цвет текста */
+    width: 100%; /* Ширина 100% */
+}
+.participants li {
+    font-size: 16px; /* Увеличение размера шрифта участников */
+    padding: 8px 0; /* Увеличенные отступы между участниками */
+    border-bottom: 1px solid #ddd; /* Разделительная линия между участниками */
+}
+
+.participants li:last-child {
+    border-bottom: none; /* Удаление разделителя у последнего участника */
+}
+
+.participants h3 {
+    margin: 0 0 10px;
+}
+
+.participants ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+}
+
+li {
+    margin-bottom: 10px; /* Отступ между сообщениями */
+    list-style: none; /* Убираем маркеры списка */
+    display: flex; /* Используем flex для размещения элементов в строку */
+    align-items: center; /* Центрируем вертикально элементы внутри li */
+}
+.username {
+    margin-right: 10px; /* Отступ между ником и текстом сообщения */
+    padding: 5px; /* Отступ для никнейма */
+    border-radius: 5px; /* Скругление углов фона ника */
+    color: white; /* Цвет текста имени */
+}
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    list-style-type: none;
+    margin: 0px;
+    border: 1px solid #eaebf0;
+    border-radius: 5px;
+    padding: 0px;
+    background: #f9f9f9;
+    display: flex; /* Используем flexbox */
+    flex-direction: column; /* Вертикально располагаем сообщения */
+    align-items: center; /* Центрируем элементы по горизонтали */
+}
+.message-text {
+    flex-grow: 1; /* Текст сообщения занимает оставшееся пространство */
+}
+.centered-event-message {
+    text-align: center !important; /* Центрирует текст */
+    margin: 10px 0; /* Отступы сверху и снизу */
+    font-style: italic; /* Курсив для текста */
+    color: gray; /* Цвет текста */
+}
+.chat-message {
+    text-align: left; /* Обычные сообщения выравниваем влево */
+    margin: 5px 0; /* Отступы сверху и снизу для обычных сообщений */
+    width: 100%; /* Занимает полную ширину родительского контейнера */
+}
+.my-message {
+    text-align: right;
+    background-color: #dcf8c6; /* Цвет фона для сообщений пользователя */
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    margin-left: auto; /* Сдвигает сообщение вправо */
+    max-width: 80%;
+     overflow-wrap: break-word; /* Переносит слова, которые не помещаются */
+        word-break: break-word;
+}
+.other-message {
+    text-align: left;
+    background-color: #f1f0f0; /* Цвет фона для других сообщений */
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    margin-right: auto; /* Сдвигает сообщение влево */
+    max-width: 80%;
+     overflow-wrap: break-word; /* Переносит слова, которые не помещаются */
+        word-break: break-word;
+        white-space: pre-wrap
+
+}
+.navbar-image {
+    height: 50px; /* Высота изображения, измените по необходимости */
+    width: auto; /* Ширина будет пропорциональной */
+    margin-right: 10px; /* Отступ справа от изображения */
+    vertical-align: middle; /* Выравнивание по вертикали с кнопками */
+}
+.chat-messages p {
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 5px;
+    background: #e6f7ff;
+     overflow-wrap: break-word; /* Переносит слова, которые не помещаются */
+        word-break: break-word;
+        white-space: pre-wrap
+}
+
+.input-container {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1;
+}
+.transparent-text {
+    color: rgba(0, 0, 0, 0.9); /* Прозрачный белый текст */
+}
+
+
+
+/* Стили для списка участников */
+#participants-list {
+    list-style-type: none; /* Убираем маркеры списка */
+    padding: 0; /* Убираем отступы */
+    margin: 0; /* Убираем отступы */
+}
+#participants-list li {
+    margin-bottom: 5px; /* Отступы между участниками */
+    padding: 10px; /* Добавьте отступы внутри элемента списка */
+    border-radius: 10px; /* Закругление углов */
+    color: white; /* Цвет текста (можно изменить) */
+    /* Добавьте дополнительные стили, если нужно */
+}
+/* Прозрачный текст для участников */
+#participants-list li {
+    color: rgba(255, 255, 255, 1); /* Прозрачный текст для участников */
+    margin-bottom: 5px; /* Отступы между участниками */
+}
+
+
+.input-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.input-container button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.input-container button:hover {
+    background-color: #0056b3; /* Цвет при наведении */
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/images/main.png');
+    background-size: 1900px 1000px;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+       /* Основные стили */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+.toggle-button {
+            margin: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/images/main.png');
+            background-size: 1900px 1000px;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+.hidden {
+            display: none;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar-title {
+            flex: 1;
+            text-align: center;
+            padding-left: 350px;
+        }
+
+        .navbar-title h1 {
+            color: white;
+            margin: 0;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .nav-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid #985113;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button1 {
+            margin-left: 140px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid #985113;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+            .container {
+                margin: 80px auto;
+                width: 50%;
+                height: 800px;
+                background-color: rgba(255, 228, 196, 0.9);
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                position: relative;
+            }
+
+      .input-group {
+    display: flex;
+    flex-direction: column; /* Измените направление на колонку */
+    align-items: flex-start; /* Выровнять элементы по началу */
+    margin-bottom: 5px; /* Добавить отступ между полями */
+    color: white;
+}
+
+.input-group label {
+    display: block; /* Сделать label блочным элементом для переноса на новую строку */
+    margin-bottom: 5px; /* Отступ между label и полем ввода */
+}
+
+.option-list {
+    width: 95%;
+    border: 1px solid #ccc; /* Добавить границу */
+    border-radius: 5px; /* Закруглить углы */
+    max-height: 120px; /* Максимальная высота списка */
+    overflow-y: auto; /* Прокрутка, если превышает максимальную высоту */
+    cursor: pointer; /* Указатель курсора при наведении */
+}
+
+.option {
+    padding: 10px; /* Внутренние отступы для каждой опции */
+    background-color: transparent; /* Фон по умолчанию */
+}
+
+.option:hover {
+    background-color: #f0f0f0; /* Фон при наведении */
+}
+
+.option.selected {
+    background-color: #c73e19; /* Замените на желаемый цвет */
+    color: white;
+}
+
+
+
+.input-group select {
+    width: 95%;
+    padding: 10px; /* Добавить внутренние отступы */
+    border: 1px solid #ccc; /* Добавить границу */
+    border-radius: 5px; /* Закруглить углы */
+    margin-bottom: 10px; /* Увеличить отступ между полями */
+    height: auto; /* Авто высота */
+    min-height: 20px; /* Минимальная высота для отображения нескольких выбранных элементов */
+}
+
+        .edit-button {
+            padding: 10px 15px;
+            font-size: 14px;
+            background-color: #bf6618;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+#playingHoursInput, #playingDaysInput, #gameModeInput, #difficultyInput, #allcareersInput,#maincareerInput, #englishlvlInput,  #countryInput  {
+    width: 95%;
+    padding: 10px; /* Добавить внутренние отступы */
+    border: 1px solid #ccc; /* Добавить границу */
+    border-radius: 5px; /* Закруглить углы */
+    margin-bottom: 10px; /* Увеличить отступ между полями */
+    cursor: pointer; /* Указатель курсора при наведении */
+}
+        .profile-container {
+            display: none; /* Скрыт по умолчанию */
+            position: absolute;
+            top: 60px; /* Позиция под навигацией */
+            left: 88%; /* Центрируем по горизонтали */
+            transform: translateX(-50%); /* Центрирование */
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            width: 400px; /* Фиксированная ширина */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* Убедитесь, что форма выше остальных элементов */
+            min-height: 500px; /* Установить минимальную высоту
+            max-height: 900px;
+            overflow-y: auto; /* Включить вертикальную прокрутку */
+            overflow-x: hidden; /* Отключить горизонтальную прокрутку (по желанию) */
+            border: 3px solid #00000;
+            overflow: auto !important;
+        }
+
+#profileContainer {
+    color: white;
+}
+
+        .profile-container.active {
+            display: block; /* Отображается, если активен */
+        }
+
+        input::placeholder {
+            color: #ffffff; /* Цвет текста placeholder */
+            opacity: 0.7; /* Непрозрачность текста */
+        }
+
+        .profile-container input {
+            width: 95%; /* Занять всю ширину контейнера */
+            padding: 10px; /* Добавить внутренние отступы */
+            margin-bottom: 10px; /* Увеличить отступ между полями */
+            border: 1px solid #ccc; /* Добавить границу */
+            border-radius: 5px; /* Закруглить углы */
+        }
+.navbar-links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo {
+    height: 40px;
+    margin-right: 20px;
+}
+
+
+
+.navbar-buttons {
+    display: flex;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.nav-button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid #985113;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.container {
+    margin: 80px auto;
+    width: 50%;
+    height: 800px;
+    background-color: rgba(255, 228, 196, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.profile-container.active {
+    display: block; /* Отображается, если активен */
+    max-height: 300px; /* Укажите максимальную высоту для анимации */
+    opacity: 1; /* Полная непрозрачность при активном состоянии */
+}
+.button-container {
+    position: absolute;
+    width: 50%; /* Контейнеры занимают половину ширины */
+    top: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.button-container.left {
+    left: 0;
+}
+
+.button-container.right {
+    right: 0;
+}
+
+.toggle-button {
+    width: 100%; /* Кнопка занимает весь контейнер */
+    padding: 15px 25px;
+    font-size: 18px;
+    background-color: #bf6618;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-button:hover {
+    background-color: #f16136;
+}
+
+.content {
+    margin-top: 100px; /* Отступ для кнопок сверху */
+    min-height: 500px;
+    text-align: center;
+}
