@@ -263,6 +263,7 @@ h3 {
         }
 .sort-buttons {
             display: flex;
+
             margin-bottom: 15px;
             gap: 0; /* Кнопки вплотную */
         }
@@ -271,7 +272,7 @@ h3 {
             padding: 12px;
             cursor: pointer;
             font-size: 1em;
-            background-color: #007bff;
+            background-color: #bf6618;
             color: white;
             border: none;
             transition: background-color 0.3s ease;
@@ -279,32 +280,57 @@ h3 {
         .sort-buttons button:hover {
                     background-color: #0056b3;
                 }
+
+
 .object-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-.object-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%; /* Занимает всю ширину родителя */
-    padding: 15px;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0; /* Цвет фона карточки */
+    border: 1px solid #ddd; /* Цвет и стиль границы */
+    border-radius: 8px; /* Скругление углов карточки */
+    padding: 15px; /* Внутренний отступ карточки */
+    width: 100%; /* Ширина карточки */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Тень карточки */
+    transition: transform 0.3s, box-shadow 0.3s; /* Плавный переход при наведении */
 }
-
-        .object-card button:hover {
-            background-color: #218838;
-        }
-
+.text-background {
+    background-color: #fff5e2 !important; /* Бирюзовый цвет фона, измените по желанию */
+    padding: 10px; /* Внутренний отступ для текста */
+    border-radius: 5px; /* Скругление углов */
+    border: 1px solid #ddd;
+}
+.button-background{
+        color: #bf6618;
+}
+.object-card:hover {
+    transform: translateY(-5px); /* Поднимаем карточку при наведении */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Увеличиваем тень */
+}
+.object-card button {
+    background-color: #bf6618; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    width: 100%;
+    border: none; /* Убираем границу */
+    border-radius: 5px; /* Скругление углов кнопки */
+    padding: 10px; /* Внутренний отступ кнопки */
+    cursor: pointer; /* Указываем, что это кнопка */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+    font-size: 16px;
+}
+.object-card button:hover {
+    background-color: #743d0c; /* Темнее при наведении */
+}
+.centered {
+    text-align: center; /* Центрируем текст */
+    font-weight: bold; /* Делаем текст жирным (по желанию) */
+}
+#object-container {
+    display: flex;
+    flex-wrap: wrap; /* Позволяет карточкам переноситься на новую строку при нехватке места */
+    gap: 20px; /* Отступ между карточками */
+    padding: 20px; /* Внутренний отступ контейнера */
+    background-color: #f9f9f9; /* Цвет фона контейнера */
+    border-radius: 8px; /* Скругление углов */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Тень контейнера */
+}
 
 
 

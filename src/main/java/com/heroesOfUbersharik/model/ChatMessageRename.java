@@ -1,6 +1,6 @@
 package com.heroesOfUbersharik.model;
 
-public class ChatMessage {
+public class ChatMessageRename {
     private String content;
     private String sender;
     private MessageType type;

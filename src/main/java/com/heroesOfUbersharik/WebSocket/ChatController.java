@@ -1,6 +1,6 @@
 package com.heroesOfUbersharik.WebSocket;
 
-import com.heroesOfUbersharik.model.ChatMessage;
+import com.heroesOfUbersharik.model.ChatMessageRename;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -15,7 +15,7 @@ public class ChatController {
     private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/chat.joined")
-    public ChatMessage register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    public ChatMessageRename register(@Payload ChatMessageRename chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
 
         String destination = "/main/public";
@@ -28,7 +28,7 @@ public class ChatController {
 
 
     @MessageMapping("/chat.send")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    public ChatMessageRename sendMessage(@Payload ChatMessageRename chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
 
         String destination = "/main/public";

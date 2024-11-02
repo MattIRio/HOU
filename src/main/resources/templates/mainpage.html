@@ -397,29 +397,19 @@
 
         <!-- Кнопки сортировки сверху -->
         <div class="sort-buttons">
-            <button>Сортировка 1</button>
-            <button>Сортировка 2</button>
-            <button>Сортировка 3</button>
-            <button>Сортировка 4</button>
-            <button>Сортировка 5</button>
+            <button>Name</button>
+            <button>Country</button>
+            <button>Difficulty</button>
+            <button>Game Mode</button>
+            <button>Playing Days</button>
+            <button>Playing Time</button>
         </div>
 
         <!-- Контейнер с объектами -->
-        <div class="chat-messages">
-            <div class="object-card">
-                <p>Объект 1</p>
-                <p>Объект 1</p>
-                <p>Объект 1</p>
-                <p>Объект 1</p>
-                <p>Объект 1</p>
-                <button>Действие</button>
-            </div>
-            <div class="object-card">
-                <p>Объект 2</p>
-                <button>Действие</button>
-            </div>
-            <!-- Добавьте другие объекты по мере необходимости -->
+        <div class="chat-messages" id="object-container">
+
         </div>
+
     </div>
 
 
@@ -529,7 +519,7 @@ document.getElementById('teamCreationForm').addEventListener('submit', function(
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            successMessage.textContent = 'Данные успешно отправлены!';
+            successMessage.textContent = 'Team Created Succesfully';
             successMessage.style.display = 'block';
         } else {
             errorMessage.textContent = data.errorMessage;
@@ -1312,7 +1302,77 @@ function onParticipantJoined(name) {
     participantsList.appendChild(listItem);
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Выполняем запрос к серверу
+    fetch('/mainpage/teams')
+        .then(response => response.json())
+        .then(data => {
+            const objectContainer = document.getElementById('object-container');
 
+            // Очищаем контейнер объектов на случай, если там есть данные
+            objectContainer.innerHTML = '';
+
+            // Перебираем каждый объект и создаем карточку
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('object-card');
+
+                const namePara = document.createElement('p');
+                namePara.classList.add('centered'); // Добавляем класс для центрирования
+                namePara.textContent = `${item.teamName}`;
+                namePara.classList.add('text-background');
+                card.appendChild(namePara);
+
+                const countryPara = document.createElement('p');
+                countryPara.textContent = `Country: ${item.teamsCountry}`;
+                countryPara.classList.add('text-background');
+                card.appendChild(countryPara);
+
+                const difficultyPara = document.createElement('p');
+                difficultyPara.textContent = `Difficulty: ${item.teamsDifficulty}`;
+                difficultyPara.classList.add('text-background');
+                card.appendChild(difficultyPara);
+
+                // Добавляем новые свойства
+                const gameModePara = document.createElement('p');
+                gameModePara.textContent = `Game Mode: ${item.teamsGameMode}`;
+                gameModePara.classList.add('text-background');
+                card.appendChild(gameModePara);
+
+                const playingDaysPara = document.createElement('p');
+                playingDaysPara.textContent = `Playing Days: ${item.teamsPlayingDays}`;
+                playingDaysPara.classList.add('text-background');
+                card.appendChild(playingDaysPara);
+
+                const playingTimePara = document.createElement('p');
+                playingTimePara.textContent = `Playing Time: ${item.teamsPlayingTime}`;
+                playingTimePara.classList.add('text-background');
+                card.appendChild(playingTimePara);
+
+               const button = document.createElement('button');
+button.textContent = 'Ask to join';
+button.addEventListener('click', function() {
+    // Отправляем запрос на сервер с данными teamName
+    fetch('/your-controller-endpoint', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ teamName: item.teamName }) // Передаем teamName
+    })
+    .then(response => {
+        if (response.ok) {
+            // Успешный ответ от сервера
+            console.log(`Запрос на присоединение к команде: ${item.teamName} успешно отправлен.`);
+        } else {
+            // Обработка ошибок
+            console.error('Ошибка при отправке запроса:', response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка сети:', error);
+    });
+});
 
 
 function getAvatarColor(messageSender) {

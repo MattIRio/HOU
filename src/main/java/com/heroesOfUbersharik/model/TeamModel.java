@@ -33,6 +33,17 @@ public class TeamModel {
     @Column(nullable = false)
     String teamsPlayingTime;
 
+    @Column()
+    Integer amountOfMembers;
+
+    public Integer getAmountOfMembers() {
+        return amountOfMembers;
+    }
+
+    public void setAmountOfMembers(Integer amountOfMembers) {
+        this.amountOfMembers = amountOfMembers;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -95,5 +106,17 @@ public class TeamModel {
 
     public void setTeamsCreatorID(Integer teamsCreator) {
         this.teamsCreatorID = teamsCreator;
+    }
+
+    public TeamModel(String teamsPlayingTime, String teamsPlayingDays, String teamsGameMode, String teamsDifficulty, String teamsCountry, String teamName) {
+        this.teamsPlayingTime = teamsPlayingTime;
+        this.teamsPlayingDays = teamsPlayingDays;
+        this.teamsGameMode = teamsGameMode;
+        this.teamsDifficulty = teamsDifficulty;
+        this.teamsCountry = teamsCountry;
+        this.teamName = teamName;
+    }
+    public TeamModel() {
+
     }
 }
