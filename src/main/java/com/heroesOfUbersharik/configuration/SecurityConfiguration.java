@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -28,6 +29,8 @@ public class SecurityConfiguration implements WebSocketMessageBrokerConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/login", "/mainpage", "/images/regPage.png", "/video/video.mp4", "/register", "/css/**", "/images/google.png", "/images/git.png", "/images/main.png", "/images/logo.png", "/oauth2/authorization/github", "/oauth2/authorization/google", "/oauth2/**").permitAll();
                     registry.requestMatchers("/profileform", "/mainpage").authenticated();

@@ -25,7 +25,7 @@
 
 
         <button class="nav-button" onclick="toggleProfile()">Profile</button>
-        <button class="nav-button create-group">Create group</button>
+        <button class="nav-button create-group" onclick="toggleTeamCreator()">Create a team</button>
 
         <form id="logoutForm" th:action="@{/logout}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -33,10 +33,146 @@
         </form>
     </div>
 </div>
-<form id="profileForm" action="/mainpage" method="post" onsubmit="submitForm(event)">
+
+<form id="teamCreationForm" action="/submitForm2" method="post" onsubmit="submitForm(event)">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <div id="teamCreationContainer" class="profile-container">
+        <h2 style="color: #ffffff;">Team Creation Form</h2>
+
+        <div id="error-message" style="display:none; color: red;"></div>
+        <div id="success-message" style="display:none; color: green;"></div>
+
+        <div class="input-group input-group-team">
+            <input type="text" id="teamName" placeholder="teamName" name="teamName" />
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsCountry">Team's Country:</label>
+            <input type="text" id="TeamsCountryInput" placeholder="Select a country" th:attr="data-value=${Country}" value="Choose your option" name="teamsCountry" onclick="toggleTeamsCountryOptions()"readonly  />
+            <div id="TeamsCountryOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${Country}" disabled selected th:text="${Country}" style="color: #62d110;"> </div>
+                <div class="option" data-value="No Country">No Country</div>
+                <div class="option" data-value="Afghanistan">Afghanistan</div>
+                <div class="option" data-value="Albania">Albania</div>
+                <div class="option" data-value="Argentina">Argentina</div>
+                <div class="option" data-value="Armenia">Armenia</div>
+                <div class="option" data-value="Australia">Australia</div>
+                <div class="option" data-value="Austria">Austria</div>
+                <div class="option" data-value="Azerbaijan">Azerbaijan</div>
+                <div class="option" data-value="Belgium">Belgium</div>
+                <div class="option" data-value="Bulgaria">Bulgaria</div>
+                <div class="option" data-value="Brazil">Brazil</div>
+                <div class="option" data-value="Canada">Canada</div>
+                <div class="option" data-value="Switzerland">Switzerland</div>
+                <div class="option" data-value="Chile">Chile</div>
+                <div class="option" data-value="China">China</div>
+                <div class="option" data-value="Colombia">Colombia</div>
+                <div class="option" data-value="Costa Rica">Costa Rica</div>
+                <div class="option" data-value="Germany">Germany</div>
+                <div class="option" data-value="Denmark">Denmark</div>
+                <div class="option" data-value="Ecuador">Ecuador</div>
+                <div class="option" data-value="Estonia">Estonia</div>
+                <div class="option" data-value="Spain">Spain</div>
+                <div class="option" data-value="Finland">Finland</div>
+                <div class="option" data-value="France">France</div>
+                <div class="option" data-value="United Kingdom">United Kingdom</div>
+                <div class="option" data-value="Georgia">Georgia</div>
+                <div class="option" data-value="Greece">Greece</div>
+                <div class="option" data-value="Guatemala">Guatemala</div>
+                <div class="option" data-value="Hong Kong">Hong Kong</div>
+                <div class="option" data-value="Croatia">Croatia</div>
+                <div class="option" data-value="Hungary">Hungary</div>
+                <div class="option" data-value="Indonesia">Indonesia</div>
+                <div class="option" data-value="Ireland">Ireland</div>
+                <div class="option" data-value="Israel">Israel</div>
+                <div class="option" data-value="India">India</div>
+                <div class="option" data-value="Italy">Italy</div>
+                <div class="option" data-value="Japan">Japan</div>
+                <div class="option" data-value="South Korea">South Korea</div>
+                <div class="option" data-value="Mexico">Mexico</div>
+                <div class="option" data-value="Netherlands">Netherlands</div>
+                <div class="option" data-value="Norway">Norway</div>
+                <div class="option" data-value="New Zealand">New Zealand</div>
+                <div class="option" data-value="Peru">Peru</div>
+                <div class="option" data-value="Philippines">Philippines</div>
+                <div class="option" data-value="Poland">Poland</div>
+                <div class="option" data-value="Portugal">Portugal</div>
+                <div class="option" data-value="Romania">Romania</div>
+                <div class="option" data-value="Sweden">Sweden</div>
+                <div class="option" data-value="Singapore">Singapore</div>
+                <div class="option" data-value="Thailand">Thailand</div>
+                <div class="option" data-value="Turkey">Turkey</div>
+                <div class="option" data-value="Ukraine">Ukraine</div>
+                <div class="option" data-value="United States">United States</div>
+                <div class="option" data-value="Vietnam">Vietnam</div>
+                <div class="option" data-value="South Africa">South Africa</div>
+            </div>
+        </div>
+
+
+        <div class="input-group">
+            <label for="TeamsDifficulty">The difficulty your team would like to play on:</label>
+            <input type="text" id="TeamsDifficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" value="Choose your option" name="teamsDifficulty" onclick="toggleTeamsDifficultyOptions()" readonly />
+            <div id="TeamsDifficultyOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Recruit">Recruit</div>
+                <div class="option" data-value="Veteran">Veteran</div>
+                <div class="option" data-value="Champion">Champion</div>
+                <div class="option" data-value="Cataclysm">Cataclysm</div>
+                <div class="option" data-value="Cataclysm+">Cataclysm+</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsGameMode">Game mode your team would like to play:</label>
+            <input type="text" id="TeamsGameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" value="Choose your option" name="TeamsGameMode" onclick="toggleTeamsGameModeOptions()"readonly  />
+            <div id="TeamsGameModeOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Chaos Waste">Chaos Waste</div>
+                <div class="option" data-value="Campaign">Campaign</div>
+                <div class="option" data-value="Deeds">Deeds</div>
+                <div class="option" data-value="Winds of Magic">Winds of Magic</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsPlayingDays">Days your team prefer to play:</label>
+            <input type="text" id="TeamsPlayingDaysInput" th:attr="data-value=${Days}" value="Choose your option" placeholder="Select days" name="teamsPlayingDays" onclick="toggleTeamsPlayingDays()"readonly  />
+            <div id="TeamsPlayingDaysOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Sunday">Sunday</div>
+                <div class="option" data-value="Monday">Monday</div>
+                <div class="option" data-value="Tuesday">Tuesday</div>
+                <div class="option" data-value="Wednesday">Wednesday</div>
+                <div class="option" data-value="Thursday">Thursday</div>
+                <div class="option" data-value="Friday">Friday</div>
+                <div class="option" data-value="Saturday">Saturday</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamplayingHours">The time your team prefer to play:</label>
+            <input type="text" id="TeamplayingHoursInput" th:attr="data-value=${TeamPlayingHours}" value="Choose your option" placeholder="Select time" name="teamsPlayingTime" onclick="toggleTeamHoursOptions()"readonly  />
+            <div id="TeamplayingHoursOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Weekdays All Day">Weekdays All Day</div>
+                <div class="option" data-value="Weekdays Evening">Weekdays Evening</div>
+                <div class="option" data-value="Weekends All Day">Weekends All Day</div>
+                <div class="option" data-value="Weekends Evening">Weekends Evening</div>
+            </div>
+        </div>
+
+
+        <button type="submit" id="submit-button1" class="nav-button1">Save</button>
+    </div>
+</form>
+
+<form id="profileForm" action="/submitForm1" method="post" onsubmit="submitForm(event)">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <div id="profileContainer" class="profile-container">
         <h2>Profile information</h2>
+
+        <div id="errorMessage" style="display: none; color: red;"></div>
 
     <div class="input-group">
         <label for="Name">Name:</label>
@@ -178,6 +314,7 @@
         <input type="text" id="difficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" th:value="${Difficulty}" name="difficulty" onclick="toggledifficultyOptions()"readonly  />
         <div id="difficultyOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Difficulty}" disabled selected th:text="${Difficulty}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Any">Any</div>
             <div class="option" data-value="Recruit">Recruit</div>
             <div class="option" data-value="Veteran">Campaign</div>
             <div class="option" data-value="Champion">Champion</div>
@@ -190,41 +327,43 @@
         <input type="text" id="gameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" th:value="${Game_mode}" name="gameMode" onclick="togglegameModeOptions()"readonly  />
             <div id="gameModeOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Game_mode}" disabled selected th:text="${Game_mode}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Any">Any</div>
             <div class="option" data-value="Chaos Waste">Chaos Waste</div>
             <div class="option" data-value="Campaign">Campaign</div>
             <div class="option" data-value="Deeds">Deeds</div>
             <div class="option" data-value="Winds of Magic">Winds of Magic</div>
             </div>
     </div>
-    <div class="input-group">
-        <label for="days">Days you prefer to play:</label>
-        <input type="text" id="playingDaysInput" th:attr="data-value=${Days}" th:value="${Days}" placeholder="Select days" name="playingDays" onclick="toggleDaysOptions()"readonly  />
-        <div id="playingDaysOptions" class="option-list" style="display: none;">
-            <div class="option" th:attr="data-value=${Days}" disabled selected th:text="${Days}" style="color: #62d110;"> </div>
-            <div class="option" data-value="Any">Any</div>
-            <div class="option" data-value="Sunday">Sunday</div>
-            <div class="option" data-value="Monday">Monday</div>
-            <div class="option" data-value="Tuesday">Tuesday</div>
-            <div class="option" data-value="Wednesday">Wednesday</div>
-            <div class="option" data-value="Thursday">Thursday</div>
-            <div class="option" data-value="Friday">Friday</div>
-            <div class="option" data-value="Saturday">Saturday</div>
+        <div class="input-group">
+            <label for="days">Days you prefer to play:</label>
+            <input type="text" id="playingDaysInput" th:attr="data-value=${Days}" th:value="${Days}" placeholder="Select days" name="playingDays" onclick="toggleDaysOptions()" readonly/>
+            <div id="playingDaysOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${Days}" disabled selected th:text="${Days}" style="color: #62d110;"> ${Days} </div>
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Sunday">Sunday</div>
+                <div class="option" data-value="Monday">Monday</div>
+                <div class="option" data-value="Tuesday">Tuesday</div>
+                <div class="option" data-value="Wednesday">Wednesday</div>
+                <div class="option" data-value="Thursday">Thursday</div>
+                <div class="option" data-value="Friday">Friday</div>
+                <div class="option" data-value="Saturday">Saturday</div>
+            </div>
         </div>
-    </div>
-    <div class="input-group">
-        <label for="playingHours">The time you prefer to play:</label>
-        <input type="text" id="playingHoursInput" th:attr="data-value=${time}" th:value="${time}" placeholder="Select time" name="playingHours" onclick="toggleHoursOptions()"readonly  />
-        <div id="playingHoursOptions" class="option-list" style="display: none;">
-            <div class="option" th:attr="data-value=${time}" disabled selected th:text="${time}" style="color: #62d110;"> </div>
-            <div class="option" data-value="Weekdays All Day">Weekdays All Day</div>
-            <div class="option" data-value="Weekdays Evening">Weekdays Evening</div>
-            <div class="option" data-value="Weekends All Day">Weekends All Day</div>
-            <div class="option" data-value="Weekends Evening">Weekends Evening</div>
+        <div class="input-group">
+            <label for="playingHours">The time you prefer to play:</label>
+            <input type="text" id="playingHoursInput" th:attr="data-value=${time}" th:value="${time}" placeholder="Select time" name="playingHours" onclick="toggleHoursOptions()" readonly />
+            <div id="playingHoursOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${time}" disabled selected th:text="${time}" style="color: #62d110;"></div>
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Weekdays All Day">Weekdays All Day</div>
+                <div class="option" data-value="Weekdays Evening">Weekdays Evening</div>
+                <div class="option" data-value="Weekends All Day">Weekends All Day</div>
+                <div class="option" data-value="Weekends Evening">Weekends Evening</div>
+            </div>
         </div>
-    </div>
 
 
-        <button type="submit" id="submit-button" class="nav-button1">Save</button>
+        <button type="submit" id="submit-button2" class="nav-button1">Save</button>
 </div>
 </form>
 
@@ -233,7 +372,7 @@
         <button id="chat-button" class="toggle-button" onclick="toggleView('chat')">Chat</button>
     </div>
     <div class="button-container right">
-        <button id="object-list-button" class="toggle-button" onclick="toggleView('objectList')">Список объектов</button>
+        <button id="object-list-button" class="toggle-button" onclick="toggleView('objectList')">Team List</button>
     </div>
 
     <div class="chat-container" id="chatContainer">
@@ -254,15 +393,34 @@
         </div>
     </div>
 
-    <div id="objectListContent" class="hidden">
-        <h3>Список объектов</h3>
-        <div class="object-list">
-            <p>Объект 1</p>
-            <p>Объект 2</p>
+    <div id="objectListContent">
+
+        <!-- Кнопки сортировки сверху -->
+        <div class="sort-buttons">
+            <button>Сортировка 1</button>
+            <button>Сортировка 2</button>
+            <button>Сортировка 3</button>
+            <button>Сортировка 4</button>
+            <button>Сортировка 5</button>
+        </div>
+
+        <!-- Контейнер с объектами -->
+        <div class="chat-messages">
+            <div class="object-card">
+                <p>Объект 1</p>
+                <p>Объект 1</p>
+                <p>Объект 1</p>
+                <p>Объект 1</p>
+                <p>Объект 1</p>
+                <button>Действие</button>
+            </div>
+            <div class="object-card">
+                <p>Объект 2</p>
+                <button>Действие</button>
+            </div>
             <!-- Добавьте другие объекты по мере необходимости -->
         </div>
     </div>
-</div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
@@ -350,7 +508,40 @@ function selectMainCareer(career) {
 
 
 
+document.getElementById('teamCreationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Отменяем стандартное поведение формы, чтобы не обновлялась страница
 
+    const formData = new FormData(this);
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    // Сбрасываем предыдущие сообщения
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+    successMessage.textContent = '';
+    successMessage.style.display = 'none';
+
+    // AJAX-запрос
+    fetch('/submitForm2', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            successMessage.textContent = 'Данные успешно отправлены!';
+            successMessage.style.display = 'block';
+        } else {
+            errorMessage.textContent = data.errorMessage;
+            errorMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        errorMessage.textContent = 'Произошла ошибка при отправке данных.';
+        errorMessage.style.display = 'block';
+    });
+});
 
 
 
@@ -369,6 +560,17 @@ function selectEnglishLevel(level) {
 
 
 
+const inputField = document.getElementById('teamName');
+
+inputField.addEventListener('focus', function() {
+    this.placeholder = ''; // Скрыть текст при фокусе
+});
+
+inputField.addEventListener('blur', function() {
+    if (this.value === '') {
+        this.placeholder = "Team's Name"; // Показать текст, если поле пустое
+    }
+});
 
 
 
@@ -405,6 +607,40 @@ function enableCountrySelect(button) {
         optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
     }
 
+    function toggleTeamHoursOptions() {
+        const optionsList = document.getElementById("TeamplayingHoursOptions");
+
+        // Переключаем видимость списка
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsPlayingDays() {
+        const optionsList = document.getElementById("TeamsPlayingDaysOptions");
+
+        // Переключаем видимость списка
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsGameModeOptions() {
+        const optionsList = document.getElementById("TeamsGameModeOptions");
+
+        // Переключаем видимость списка
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsDifficultyOptions() {
+        const optionsList = document.getElementById("TeamsDifficultyOptions");
+
+        // Переключаем видимость списка
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+     function toggleTeamsCountryOptions() {
+        const optionsList = document.getElementById("TeamsCountryOptions");
+
+        // Переключаем видимость списка
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
     function togglegameModeOptions() {
         const optionsList = document.getElementById("gameModeOptions");
 
@@ -416,36 +652,31 @@ function enableCountrySelect(button) {
     option.addEventListener('click', function() {
         const playingDaysInput = document.getElementById("playingDaysInput");
 
-        // Определяем первую опцию
-        const firstOption = document.querySelector('#playingDaysOptions .option[disabled]');
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#playingDaysOptions .option');
 
-        // Проверяем, выделена ли уже эта опция
-        const isSelected = this.classList.contains('selected');
+        // Получаем все опции "Any"
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
 
-        // Если нажата первая опция
-        if (this === firstOption) {
-            // Сбрасываем все остальные опции
-            document.querySelectorAll('#playingDaysOptions .option').forEach(opt => {
-                if (opt !== firstOption) {
-                    opt.classList.remove('selected');
-                }
+        // Логика: если выбрана опция "Any"
+        if (anyOptions.includes(this)) {
+            // Сбрасываем выделение для всех опций
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
             });
-            // Выделяем первую опцию
+            // Выделяем только текущую опцию "Any"
             this.classList.add('selected');
         } else {
             // Если выбрана другая опция
-            if (isSelected) {
-                // Убираем выделение
-                this.classList.remove('selected');
-            } else {
-                // Выделяем новую опцию и сбрасываем первую
-                this.classList.add('selected');
-                firstOption.classList.remove('selected');
-            }
+            // Сбрасываем выделение для всех "Any"
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
         }
 
         // Собираем все выбранные значения
-        const selectedOptions = Array.from(document.querySelectorAll('#playingDaysOptions .option.selected'))
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
                                       .map(opt => opt.dataset.value);
 
         // Обновляем текст в input с выбранными значениями
@@ -453,40 +684,37 @@ function enableCountrySelect(button) {
     });
 });
 
-   document.querySelectorAll('#gameModeOptions .option').forEach(option => {
+
+
+document.querySelectorAll('#gameModeOptions .option').forEach(option => {
     option.addEventListener('click', function() {
         const gameModeInput = document.getElementById("gameModeInput");
 
-        // Определяем первую опцию
-        const firstOption = document.querySelector('#gameModeOptions .option[disabled]');
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#gameModeOptions .option');
 
-        // Проверяем, выделена ли уже эта опция
-        const isSelected = this.classList.contains('selected');
+        // Получаем все опции "Any"
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
 
-        // Если нажата первая опция
-        if (this === firstOption) {
-            // Сбрасываем все остальные опции
-            document.querySelectorAll('#gameModeOptions .option').forEach(opt => {
-                if (opt !== firstOption) {
-                    opt.classList.remove('selected');
-                }
+        // Логика: если выбрана опция "Any"
+        if (anyOptions.includes(this)) {
+            // Сбрасываем выделение для всех опций
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
             });
-            // Выделяем первую опцию
+            // Выделяем только текущую опцию "Any"
             this.classList.add('selected');
         } else {
             // Если выбрана другая опция
-            if (isSelected) {
-                // Убираем выделение
-                this.classList.remove('selected');
-            } else {
-                // Выделяем новую опцию и сбрасываем первую
-                this.classList.add('selected');
-                firstOption.classList.remove('selected');
-            }
+            // Сбрасываем выделение для всех "Any"
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
         }
 
         // Собираем все выбранные значения
-        const selectedOptions = Array.from(document.querySelectorAll('#gameModeOptions .option.selected'))
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
                                       .map(opt => opt.dataset.value);
 
         // Обновляем текст в input с выбранными значениями
@@ -498,36 +726,31 @@ document.querySelectorAll('#difficultyOptions .option').forEach(option => {
     option.addEventListener('click', function() {
         const difficultyInput = document.getElementById("difficultyInput");
 
-        // Определяем первую опцию
-        const firstOption = document.querySelector('#difficultyOptions .option[disabled]');
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#difficultyOptions .option');
 
-        // Проверяем, выделена ли уже эта опция
-        const isSelected = this.classList.contains('selected');
+        // Получаем все опции "Any"
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
 
-        // Если нажата первая опция
-        if (this === firstOption) {
-            // Сбрасываем все остальные опции
-            document.querySelectorAll('#difficultyOptions .option').forEach(opt => {
-                if (opt !== firstOption) {
-                    opt.classList.remove('selected');
-                }
+        // Логика: если выбрана опция "Any"
+        if (anyOptions.includes(this)) {
+            // Сбрасываем выделение для всех опций
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
             });
-            // Выделяем первую опцию
+            // Выделяем только текущую опцию "Any"
             this.classList.add('selected');
         } else {
             // Если выбрана другая опция
-            if (isSelected) {
-                // Убираем выделение
-                this.classList.remove('selected');
-            } else {
-                // Выделяем новую опцию и сбрасываем первую
-                this.classList.add('selected');
-                firstOption.classList.remove('selected');
-            }
+            // Сбрасываем выделение для всех "Any"
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
         }
 
-    // Собираем все выбранные значения
-        const selectedOptions = Array.from(document.querySelectorAll('#difficultyOptions .option.selected'))
+        // Собираем все выбранные значения
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
                                       .map(opt => opt.dataset.value);
 
         // Обновляем текст в input с выбранными значениями
@@ -668,47 +891,211 @@ document.querySelectorAll('#maincareerOptions .option').forEach(option => {
 
 
 
-
-
-
-    document.querySelectorAll('#playingHoursOptions .option').forEach(option => {
+document.querySelectorAll('#playingHoursOptions .option').forEach(option => {
     option.addEventListener('click', function() {
         const playingHoursInput = document.getElementById("playingHoursInput");
 
-        // Определяем первую опцию
-        const firstOption = document.querySelector('#playingHoursOptions .option[disabled]');
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#playingHoursOptions .option');
 
-        // Проверяем, выделена ли уже эта опция
-        const isSelected = this.classList.contains('selected');
+        // Получаем все опции "Any"
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
 
-        // Если нажата первая опция
-        if (this === firstOption) {
-            // Сбрасываем все остальные опции
-            document.querySelectorAll('#playingHoursOptions .option').forEach(opt => {
-                if (opt !== firstOption) {
-                    opt.classList.remove('selected');
-                }
+        // Логика: если выбрана опция "Any"
+        if (anyOptions.includes(this)) {
+            // Сбрасываем выделение для всех опций
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
             });
-            // Выделяем первую опцию
+            // Выделяем только текущую опцию "Any"
             this.classList.add('selected');
         } else {
             // Если выбрана другая опция
-            if (isSelected) {
-                // Убираем выделение
-                this.classList.remove('selected');
-            } else {
-                // Выделяем новую опцию и сбрасываем первую
-                this.classList.add('selected');
-                firstOption.classList.remove('selected');
-            }
+            // Сбрасываем выделение для всех "Any"
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
         }
 
         // Собираем все выбранные значения
-        const selectedOptions = Array.from(document.querySelectorAll('#playingHoursOptions .option.selected'))
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
                                       .map(opt => opt.dataset.value);
 
         // Обновляем текст в input с выбранными значениями
         playingHoursInput.value = selectedOptions.join(', ') || playingHoursInput.getAttribute("data-value"); // Начальное значение из data-атрибута
+    });
+});
+
+
+
+
+
+document.querySelectorAll('#TeamplayingHoursOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingHoursInput = document.getElementById("TeamplayingHoursInput");
+
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#TeamplayingHoursOptions .option');
+
+        // Определяем опцию "Any"
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+        // Логика: если выбрана опция "Any"
+        if (this === anyOption) {
+            // Сбрасываем все остальные опции
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Выделяем опцию "Any"
+            anyOption.classList.add('selected');
+        } else {
+            // Если выбрана другая опция
+            // Сбрасываем выбор "Any"
+            anyOption.classList.remove('selected');
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
+        }
+
+        // Собираем все выбранные значения
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+        // Обновляем текст в input с выбранными значениями
+        playingHoursInput.value = selectedOptions.join(', ') || playingHoursInput.getAttribute("data-value"); // Начальное значение из data-атрибута
+    });
+});
+
+document.querySelectorAll('#TeamsPlayingDaysOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingDaysInput = document.getElementById("TeamsPlayingDaysInput");
+
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#TeamsPlayingDaysOptions .option');
+
+        // Определяем опцию "Any"
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+        // Логика: если выбрана опция "Any"
+        if (this === anyOption) {
+            // Сбрасываем все остальные опции
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Выделяем опцию "Any"
+            anyOption.classList.add('selected');
+        } else {
+            // Если выбрана другая опция
+            // Сбрасываем выбор "Any"
+            anyOption.classList.remove('selected');
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
+        }
+
+        // Собираем все выбранные значения
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+        // Обновляем текст в input с выбранными значениями
+        playingDaysInput.value = selectedOptions.join(', ') || playingDaysInput.getAttribute("data-value"); // Начальное значение из data-атрибута
+    });
+});
+
+document.querySelectorAll('#TeamsGameModeOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const gameModeInput = document.getElementById("TeamsGameModeInput");
+
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#TeamsGameModeOptions .option');
+
+        // Определяем опцию "Any"
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+        // Логика: если выбрана опция "Any"
+        if (this === anyOption) {
+            // Сбрасываем все остальные опции
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Выделяем опцию "Any"
+            anyOption.classList.add('selected');
+        } else {
+            // Если выбрана другая опция
+            // Сбрасываем выбор "Any"
+            anyOption.classList.remove('selected');
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
+        }
+
+        // Собираем все выбранные значения
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+        // Обновляем текст в input с выбранными значениями
+        gameModeInput.value = selectedOptions.join(', ') || gameModeInput.getAttribute("data-value"); // Начальное значение из data-атрибута
+    });
+});
+
+document.querySelectorAll('#TeamsDifficultyOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const difficultyInput = document.getElementById("TeamsDifficultyInput");
+
+        // Получаем все опции
+        const allOptions = document.querySelectorAll('#TeamsDifficultyOptions .option');
+
+        // Определяем опцию "Any"
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+        // Логика: если выбрана опция "Any"
+        if (this === anyOption) {
+            // Сбрасываем все остальные опции
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Выделяем опцию "Any"
+            anyOption.classList.add('selected');
+        } else {
+            // Если выбрана другая опция
+            // Сбрасываем выбор "Any"
+            anyOption.classList.remove('selected');
+            // Выделяем текущую опцию
+            this.classList.toggle('selected'); // Переключаем выделение для текущей опции
+        }
+
+        // Собираем все выбранные значения
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+        // Обновляем текст в input с выбранными значениями
+        difficultyInput.value = selectedOptions.join(', ') || difficultyInput.getAttribute("data-value"); // Начальное значение из data-атрибута
+    });
+});
+
+
+
+
+document.querySelectorAll('#TeamsCountryOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const TeamsCountryInput = document.getElementById("TeamsCountryInput");
+        const optionsList = document.getElementById("TeamsCountryOptions");
+
+        // Снимаем выделение со всех опций
+        document.querySelectorAll('#TeamsCountryOptions .option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        // Выделяем выбранную опцию
+        this.classList.add('selected');
+
+        // Устанавливаем выбранное значение в input или текст по умолчанию, если ничего не выбрано
+        TeamsCountryInput.value = this.dataset.value || "Choose your option";
+
+        // Закрываем список опций
+        optionsList.style.display = "none";
     });
 });
 
@@ -732,13 +1119,25 @@ document.querySelectorAll('#maincareerOptions .option').forEach(option => {
     };
 
     function toggleProfile() {
-        const profileContainer = document.getElementById('profileContainer');
-        profileContainer.classList.toggle('active'); // Переключить видимость профиля
-    }
+    hideTeamCreator(); // Скрываем форму создания команды перед открытием профиля
+    const profileContainer = document.getElementById('profileContainer');
+    profileContainer.classList.toggle('active'); // Переключаем видимость профиля
+}
+
+    function toggleTeamCreator() {
+    hideProfile(); // Скрываем профиль перед открытием формы создания команды
+    const teamCreationForm = document.getElementById('teamCreationContainer');
+    teamCreationForm.classList.toggle('active'); // Переключаем видимость формы создания команды
+}
 
     function hideProfile() {
         const profileContainer = document.getElementById('profileContainer');
         profileContainer.classList.remove('active'); // Скрываем профиль
+    }
+
+    function hideTeamCreator() {
+        const teamCreationForm = document.getElementById('teamCreationContainer');
+        teamCreationForm.classList.remove('active'); // Скрываем профиль
     }
 
 
