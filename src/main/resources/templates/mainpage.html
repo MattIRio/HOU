@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Вебсайт</title>
+    <title></title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+
     <link rel="stylesheet" href="/css/mainpage.css"> <!-- Подключите ваш CSS файл -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -168,7 +172,7 @@
 </form>
 
 <form id="profileForm" action="/submitForm1" method="post" onsubmit="submitForm(event)">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div id="profileContainer" class="profile-container">
         <h2>Profile information</h2>
 
@@ -376,22 +380,42 @@
     </div>
 
     <div class="chat-container" id="chatContainer">
-        <div class="participants rounded-form">
-            <h3 class="transparent-text">Members</h3>
-            <ul id="participants-list">
-            </ul>
-        </div>
+        <div class="participants-requests-container">
+            <div class="participants rounded-form">
+                <h3 class="transparent-text">Members</h3>
+                <ul id="participants-list">
+                    <!-- Список участников будет заполняться динамически -->
+                </ul>
+            </div>
 
-        <div class="chat-area">
+            <div class="requests rounded-form">
+                <h3 class="transparent-text">Requests</h3>
+                <ul id="request-list" class="scrollable-list">
+                    <li>
+                    <button class="approve-btn">Approve</button>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="notInTeamMessage" class="not-in-team-message" style="display: none;">
+            Please join a team or create your own to have access to the chat room.
+        </div>
+        <div class="chat-area" id="chatArea">
             <div class="chat-messages" id="chatMessages">
                 <!-- Сообщения чата будут здесь -->
             </div>
+
             <form class="input-container" id="messageForm">
-                <input type="text" id="message" placeholder="Введите сообщение" autocomplete="off" required />
-                <button type="submit">Отправить</button>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <input type="text" id="message" placeholder="Enter message" autocomplete="off" required />
+                <button type="submit">Send</button>
             </form>
         </div>
-    </div>
+
+            </div>
+
+
 
     <div id="objectListContent">
 
@@ -411,12 +435,19 @@
         </div>
 
     </div>
-
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
+
     'use strict';
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    console.log('CSRF Token12312:', csrfToken);
+console.log('CSRF Header123123:', csrfHeader);
 
 function toggleDaysOptions() {
         const optionsList = document.getElementById("playingDaysOptions");
@@ -483,7 +514,89 @@ function selectCountry(country) {
     document.getElementById('countryOptions').style.display = 'none'; // Закрытие выпадающего списка
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Проверяем, является ли пользователь членом команды при загрузке страницы
+    fetch('/mainpage/chatavalibility')
+    .then(response => {
+        console.log('Response Status:', response.status); // Статус ответа
+        return response.json();
+    })
+    .then(isMember => {
+        console.log('Is member:', isMember);  // Для отладки, что сервер возвращает
+        if (isMember) {
+            // Если пользователь является членом команды, подключаем его к чату
+            const publicTopic = '/main/public';
+            stompClient.subscribe(publicTopic, onMessageReceived);
 
+            // Сообщаем серверу, что пользователь подключился
+            stompClient.send("/app/chat.joined", {}, JSON.stringify({ sender: username, type: 'JOIN' }));
+            connectingElement.classList.add('hidden');
+        } else {
+            // Если пользователь не в команде, добавляем сообщение о недоступности чата
+            showNotInTeamMessage();
+            document.getElementById('messageForm').style.display = 'none'; // Скрываем форму отправки сообщений
+        }
+    })
+    .catch(error => {
+        console.error('Error checking chat availability:', error);
+    });
+});
+
+function showNotInTeamMessage() {
+    const messageDiv = document.getElementById("notInTeamMessage");
+    if (messageDiv) {
+        messageDiv.style.display = "block"; // Показываем сообщение
+    }
+}
+
+function hideNotInTeamMessage() {
+    const messageDiv = document.getElementById("notInTeamMessage");
+    if (messageDiv) {
+        messageDiv.style.display = "none"; // Скрываем сообщение
+    }
+}
+
+function toggleView(view) {
+    const chatContainer = document.getElementById('chatContainer');
+    const objectListContent = document.getElementById('objectListContent');
+
+    if (view === 'chat') {
+        chatContainer.classList.remove('hidden');
+        objectListContent.classList.add('hidden');
+
+        checkUserTeamStatus(); // Проверяем статус пользователя при отображении чата
+    } else {
+        chatContainer.classList.add('hidden');
+        objectListContent.classList.remove('hidden');
+
+        hideNotInTeamMessage(); // Скрываем сообщение при переключении на "Team List"
+    }
+}
+
+function checkUserTeamStatus() {
+    fetch('/mainpage/chatavalibility')
+        .then(response => response.json())
+        .then(isMember => {
+            console.log('User team status:', isMember); // Для отладки
+            if (!isMember) {
+                showNotInTeamMessage(); // Показываем сообщение, если не член команды
+            } else {
+                hideNotInTeamMessage(); // Скрывем сообщение если член
+            }
+        })
+        .catch(error => console.error('Error checking user team status:', error));
+}
+
+// Вызываем checkUserTeamStatus при загрузке страницы
+document.addEventListener("DOMContentLoaded", function() {
+    checkUserTeamStatus();
+});
+
+
+
+
+  console.log('CSRF Token11:', csrfToken);
+console.log('CSRF Header11:', csrfHeader);
 
     function togglemaincareerOptions() {
     var options = document.getElementById("maincareerOptions");
@@ -519,7 +632,7 @@ document.getElementById('teamCreationForm').addEventListener('submit', function(
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            successMessage.textContent = 'Team Created Succesfully';
+            successMessage.textContent = 'Данные успешно отправлены!';
             successMessage.style.display = 'block';
         } else {
             errorMessage.textContent = data.errorMessage;
@@ -534,7 +647,8 @@ document.getElementById('teamCreationForm').addEventListener('submit', function(
 });
 
 
-
+ console.log('CSRF Token12:', csrfToken);
+console.log('CSRF Header12:', csrfHeader);
 
 
 function toggleenglishlvlOptions() {
@@ -565,6 +679,8 @@ inputField.addEventListener('blur', function() {
 
 
 
+ console.log('CSRF Token13:', csrfToken);
+console.log('CSRF Header13:', csrfHeader);
 
      function togglecountryOptions() {
     var options = document.getElementById('countryOptions');
@@ -675,6 +791,8 @@ function enableCountrySelect(button) {
 });
 
 
+ console.log('CSRF Token14:', csrfToken);
+console.log('CSRF Header14:', csrfHeader);
 
 document.querySelectorAll('#gameModeOptions .option').forEach(option => {
     option.addEventListener('click', function() {
@@ -749,6 +867,8 @@ document.querySelectorAll('#difficultyOptions .option').forEach(option => {
 });
 
 
+ console.log('CSRF Token15:', csrfToken);
+console.log('CSRF Header15:', csrfHeader);
 
 
 document.querySelectorAll('#allcareersOptions .option').forEach(option => {
@@ -880,6 +1000,9 @@ document.querySelectorAll('#maincareerOptions .option').forEach(option => {
 });
 
 
+
+ console.log('CSRF Token16:', csrfToken);
+console.log('CSRF Header16:', csrfHeader);
 
 document.querySelectorAll('#playingHoursOptions .option').forEach(option => {
     option.addEventListener('click', function() {
@@ -1067,6 +1190,8 @@ document.querySelectorAll('#TeamsDifficultyOptions .option').forEach(option => {
 
 
 
+ console.log('CSRF Token17:', csrfToken);
+console.log('CSRF Header17:', csrfHeader);
 
 document.querySelectorAll('#TeamsCountryOptions .option').forEach(option => {
     option.addEventListener('click', function() {
@@ -1156,15 +1281,6 @@ document.querySelectorAll('#TeamsCountryOptions .option').forEach(option => {
         stompClient.connect({}, onConnected, onError);
     }
 
-    function onConnected() {
-        // Подписка на топик
-        const publicTopic = '/main/public';
-        stompClient.subscribe(publicTopic, onMessageReceived);
-
-        // Сообщаем серверу, что пользователь подключился
-        stompClient.send("/app/chat.joined", {}, JSON.stringify({ sender: username, type: 'JOIN' }));
-        connectingElement.classList.add('hidden');
-    }
 
     function onError(error) {
         connectingElement.textContent = 'Не удалось подключиться к серверу WebSocket. Попробуйте обновить страницу.';
@@ -1256,36 +1372,18 @@ function onMessageReceived(payload) {
 }
 
 
-
-function addParticipant(name) {
-    // Проверка, если участник уже в списке
-    if (!participants.includes(name)) {
-        participants.push(name); // Добавляем участника в массив
-        updateParticipantsList(); // Обновляем отображение
-    }
-}
-
-function updateParticipantsList() {
-    var participantsList = document.getElementById('participants-list');
-    participantsList.innerHTML = ''; // Очищаем список перед обновлением
-
-    // Добавляем каждого участника из массива в список
-    participants.forEach(function(participant) {
-        var listItem = document.createElement('li');
-        listItem.textContent = participant;
-
-        // Получаем цвет для участника
-        var backgroundColor = getAvatarColor(participant);
-        listItem.style.backgroundColor = backgroundColor; // Устанавливаем фон
-
-        // Добавляем элемент списка в ul
-        participantsList.appendChild(listItem);
-    });
-}
+ console.log('CSRF Token18:', csrfToken);
+console.log('CSRF Header18:', csrfHeader);
 
 
 
 
+
+
+
+
+ console.log('CSRF Token19:', csrfToken);
+console.log('CSRF Header19:', csrfHeader);
 
 function onParticipantJoined(name) {
     var participantsList = document.querySelector('.participants ul'); // Получаем список участников
@@ -1303,92 +1401,286 @@ function onParticipantJoined(name) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Выполняем запрос к серверу
     fetch('/mainpage/teams')
         .then(response => response.json())
         .then(data => {
             const objectContainer = document.getElementById('object-container');
-
-            // Очищаем контейнер объектов на случай, если там есть данные
-            objectContainer.innerHTML = '';
+            objectContainer.innerHTML = ''; // Сбрасываем контейнер перед добавлением новых элементов
 
             // Перебираем каждый объект и создаем карточку
-            data.forEach(item => {
+            console.log('Received data:', data); // Логи для проверки полученных данных
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                console.log(`Team Name: ${item.teamName}, Button Active: ${item.buttonActive}`); // Логирование состояния кнопки
+console.log(`Button Active status for ${item.teamName}:`, item.buttonActive);
                 const card = document.createElement('div');
                 card.classList.add('object-card');
 
                 const namePara = document.createElement('p');
-                namePara.classList.add('centered'); // Добавляем класс для центрирования
-                namePara.textContent = `${item.teamName}`;
-                namePara.classList.add('text-background');
+                namePara.classList.add('centered', 'text-background');
+                namePara.textContent = item.teamName;
                 card.appendChild(namePara);
 
-                const countryPara = document.createElement('p');
-                countryPara.textContent = `Country: ${item.teamsCountry}`;
-                countryPara.classList.add('text-background');
+                const countryPara = createInfoParagraph(`Country: ${item.teamsCountry}`);
+                const difficultyPara = createInfoParagraph(`Difficulty: ${item.teamsDifficulty}`);
+                const gameModePara = createInfoParagraph(`Game Mode: ${item.teamsGameMode}`);
+                const playingDaysPara = createInfoParagraph(`Playing Days: ${item.teamsPlayingDays}`);
+                const playingTimePara = createInfoParagraph(`Playing Time: ${item.teamsPlayingTime}`);
+
+                // Добавляем параграфы в карточку
                 card.appendChild(countryPara);
-
-                const difficultyPara = document.createElement('p');
-                difficultyPara.textContent = `Difficulty: ${item.teamsDifficulty}`;
-                difficultyPara.classList.add('text-background');
                 card.appendChild(difficultyPara);
-
-                // Добавляем новые свойства
-                const gameModePara = document.createElement('p');
-                gameModePara.textContent = `Game Mode: ${item.teamsGameMode}`;
-                gameModePara.classList.add('text-background');
                 card.appendChild(gameModePara);
-
-                const playingDaysPara = document.createElement('p');
-                playingDaysPara.textContent = `Playing Days: ${item.teamsPlayingDays}`;
-                playingDaysPara.classList.add('text-background');
                 card.appendChild(playingDaysPara);
-
-                const playingTimePara = document.createElement('p');
-                playingTimePara.textContent = `Playing Time: ${item.teamsPlayingTime}`;
-                playingTimePara.classList.add('text-background');
                 card.appendChild(playingTimePara);
 
-               const button = document.createElement('button');
-button.textContent = 'Ask to join';
-button.addEventListener('click', function() {
-    // Отправляем запрос на сервер с данными teamName
-    fetch('/your-controller-endpoint', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ teamName: item.teamName }) // Передаем teamName
-    })
-    .then(response => {
-        if (response.ok) {
-            // Успешный ответ от сервера
-            console.log(`Запрос на присоединение к команде: ${item.teamName} успешно отправлен.`);
-        } else {
-            // Обработка ошибок
-            console.error('Ошибка при отправке запроса:', response.statusText);
-        }
-    })
-    .catch(error => {
-        console.error('Ошибка сети:', error);
-    });
+                // Создание кнопки
+                const button = document.createElement('button');
+                button.textContent = 'Ask to join';
+
+                // Установка состояния кнопки
+               if (item.buttonActive === true) {
+    button.disabled = false; // Кнопка активна
+    button.classList.remove('disabled'); // Убираем класс disabled
+                } else {
+                    button.disabled = true;  // Кнопка неактивна
+    button.classList.add('disabled'); // Устанавливаем класс disabled
+                }
+
+                // Обработка события клика по кнопке
+                button.addEventListener('click', function() {
+                    fetch('/joinrequest', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken // Предположим, что csrfHeader и csrfToken определены
+                        },
+                        body: JSON.stringify({ teamName: item.teamName })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => console.error('Ошибка при отправке запроса:', error));
+                });
+
+                // Добавляем кнопку в карточку
+                card.appendChild(button);
+                objectContainer.appendChild(card);
+            });
+        })
+        .catch(error => console.error('Ошибка загрузки данных:', error));
+
+    // Функция для создания параграфа с информацией
+    function createInfoParagraph(text) {
+        const para = document.createElement('p');
+        para.classList.add('text-background');
+        para.textContent = text;
+        return para;
+    }
 });
 
 
-function getAvatarColor(messageSender) {
-    // Генерация хэша на основе имени отправителя
-    var hash = 0;
-    for (var i = 0; i < messageSender.length; i++) {
-        hash = 31 * hash + messageSender.charCodeAt(i);
-    }
-
-    // Получаем индекс цвета по хэшу
-    var index = Math.abs(hash % colors.length);
-    return colors[index];
+function getAvatarColor(name) {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16); // Генерирует случайный цвет
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Получаем данные о участниках и запросах
+    fetch('/mainpage/teammembers')
+        .then(response => response.json())
+        .then(data => {
+
+            updateMemberList(data.members);    // Обновляем список участников
+        })
+        .catch(error => {
+            console.error('Error fetching team members:', error);
+        });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    fetchRequests();
+});
+
+function fetchRequests() {
+    fetch('/mainpage/requestsList')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const requestList = document.getElementById('request-list');
+            requestList.innerHTML = ''; // Очистить список перед добавлением новых данных
+
+            data.forEach(user => {
+                const listItem = document.createElement('li');
+                const userContainer = document.createElement('div');
+                userContainer.className = 'user-name-container';
+
+                const userName = document.createElement('div');
+                userName.className = 'user-name';
+                userName.textContent = user.name;
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = `
+                    <strong>Country:</strong> ${user.country}<br>
+                    <strong>English Level:</strong> ${user.englishLvl}<br>
+                    <strong>Main Career:</strong> ${user.mainCareer}<br>
+                    <strong>All Careers:</strong> ${user.allCareers}<br>
+                    <strong>Playing Hours:</strong> ${user.playingHours}<br>
+                    <strong>Playing Days:</strong> ${user.playingDays}<br>
+                    <strong>Difficulty:</strong> ${user.difficulty}<br>
+                    <strong>Game Mode:</strong> ${user.gameMode}
+                `;
+
+                // Добавляем tooltip к userName и обработчики для отображения
+                userName.appendChild(tooltip);
+                userName.addEventListener('mouseenter', (event) => {
+                    tooltip.classList.add('visible'); // Показываем tooltip
+                    const rect = event.target.getBoundingClientRect(); // Координаты userName
+                    tooltip.style.top = `${rect.top + window.scrollY}px`;
+                    tooltip.style.left = `${rect.right + 10}px`;
+                });
+                userName.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('visible'); // Скрываем tooltip
+                });
+
+                // Кнопка "Approve"
+                const approveButton = document.createElement('button');
+                approveButton.className = 'approve-btn';
+                approveButton.textContent = 'Add to team';
+
+                // Добавляем обработчик для кнопки "Approve"
+                approveButton.addEventListener('click', () => {
+                    addMemberToTeam(user.name); // Отправка запроса на сервер
+                });
+
+                // Добавляем элементы в контейнер и список
+                userContainer.appendChild(userName);
+                userContainer.appendChild(approveButton);
+                listItem.appendChild(userContainer);
+                requestList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+function addMemberToTeam(userName) {
+    console.log(`Preparing to send data for user: ${userName}`);
+
+    fetch(`/mainpage/addmember?userName=${userName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken // Пример использования CSRF-токена
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+
+        // Обновляем список запросов и участников
+        updateRequestList(data.requests);
+        updateMemberList(data.members);
+
+        alert('Member added to team!');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error adding the member.');
+    });
+}
+
+function updateRequestList(requests) {
+    const requestList = document.getElementById('request-list');
+    requestList.innerHTML = ''; // Очищаем текущий список запросов
+
+    requests.forEach(request => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Request from ${request.senderName}`;
+        const approveButton = document.createElement('button');
+        approveButton.className = 'approve-btn';
+        approveButton.textContent = 'Approve';
+        listItem.appendChild(approveButton);
+        requestList.appendChild(listItem);
+    });
+}
+const memberColors = new Map();
 
 
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+function updateMemberList(members) {
+    const participantsList = document.getElementById('participants-list');
+    participantsList.innerHTML = ''; // Очищаем текущий список участников
+
+    // Загружаем сохраненные цвета участников из localStorage
+    const storedColors = JSON.parse(localStorage.getItem('participantColors')) || {};
+
+    members.forEach(function(member) {
+        const listItem = document.createElement('li');
+        const userContainer = document.createElement('div');
+        userContainer.className = 'user-name-container';
+
+        const userName = document.createElement('div');
+        userName.className = 'user-name';
+        userName.textContent = member.name;
+
+        // Проверяем, если цвет для участника уже сохранен, иначе назначаем новый случайный цвет
+        if (!storedColors[member.name]) {
+            storedColors[member.name] = getRandomColor();
+        }
+        userName.style.backgroundColor = storedColors[member.name]; // Устанавливаем сохраненный цвет
+
+        // Создаем tooltip с дополнительной информацией
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = `
+            <strong>Country:</strong> ${member.country}<br>
+            <strong>English Level:</strong> ${member.englishLvl}<br>
+            <strong>Main Career:</strong> ${member.mainCareer}<br>
+            <strong>All Careers:</strong> ${member.allCareers}<br>
+            <strong>Playing Hours:</strong> ${member.playingHours}<br>
+            <strong>Playing Days:</strong> ${member.playingDays}<br>
+            <strong>Difficulty:</strong> ${member.difficulty}<br>
+            <strong>Game Mode:</strong> ${member.gameMode}
+        `;
+
+        // Добавляем tooltip к userName и обработчики для отображения
+        userName.appendChild(tooltip);
+        userName.addEventListener('mouseenter', (event) => {
+            tooltip.classList.add('visible'); // Показываем tooltip
+            const rect = event.target.getBoundingClientRect(); // Координаты userName
+            tooltip.style.top = `${rect.top + window.scrollY}px`;
+            tooltip.style.left = `${rect.right + 10}px`; // Позиционируем справа от имени
+        });
+        userName.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible'); // Скрываем tooltip
+        });
+
+        // Добавляем имя участника в контейнер
+        userContainer.appendChild(userName);
+        listItem.appendChild(userContainer);
+        participantsList.appendChild(listItem); // Добавляем элемент в список
+    });
+
+    // Сохраняем цвета участников в localStorage
+    localStorage.setItem('participantColors', JSON.stringify(storedColors));
+}
 
 
     function showChat() {

@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface MyTeamRepository extends JpaRepository<TeamModel, Long> {
         Optional<TeamModel> findByTeamName(String teamName);
         Optional<TeamModel> findByTeamsCreatorID(Integer teamsCreatorID);
+
+
     }

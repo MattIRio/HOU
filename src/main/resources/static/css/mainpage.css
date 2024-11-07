@@ -8,12 +8,19 @@ html, body {
 * {
     box-sizing: border-box;
 }
+.requests ul li {
+    border-bottom: 2px solid #ddd; /* Нижняя граница */
+    padding: 10px; /* Отступы внутри элемента списка */
+}
 
+.requests ul li:last-child {
+    border-bottom: none; /* Убираем нижнюю границу у последнего элемента */
+}
 
 .wrapper {
     display: flex;
     justify-content: center; /* Центрирование по горизонтали, можно убрать если не нужно */
-    align-items: flex-end; /* Выровнять по нижнему краю страницы */
+    align-items: flex-start; /* Выровнять по нижнему краю страницы */
     height: 100%;
 }
 .chat-container {
@@ -25,15 +32,145 @@ html, body {
     margin-top: 70px;
 }
 
+
+.requests h3 {
+    margin-bottom: 15px; /* Увеличенный отступ под заголовком */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 20px; /* Увеличение размера шрифта заголовка */
+}
+
+.requests ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Убираем отступы */
+}
+.requests {
+    background-color: #f1f1f1;
+    padding: 10px;
+    height: 45%; /* Высота запросов 40% */
+    overflow-y: auto; /* Прокрутка для запросов */
+    border-right: 1px solid #ddd;
+     border-top: 1px solid #000000;
+}
+
+.user-name {
+    display: inline-block;
+    padding: 5px;
+    background-color: #f18a22;
+    color: white;
+    border-radius: 15px;
+    width: 100%;
+    margin-bottom: 5px;
+    border: 1.3px solid #000000;
+    position: relative; /* Относительное позиционирование для всплывающего окна */
+    cursor: pointer; /* Указатель на курсор */
+    text-align: center;
+}
+
+.approve-btn {
+    background-color: #92c13b; /* Цвет кнопки */
+    color: white;
+    border: none;
+    border-radius:15px;
+    padding: 3px 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 0px; /* Отступ слева */
+    transition: background-color 0.3s;
+    width: 100%;
+    border: 1.3px solid #000000;
+}
+
+.approve-btn:hover {
+    background-color: #abe83c;
+}
+.user-name-container {
+    display: flex;
+        flex-direction: column; /* Направляем элементы по вертикали */
+        align-items: flex-start; /* Выравнивание по левому краю */
+        margin-bottom: 10px;
+    position: relative;
+    width: 100%;
+}
+
+.user-name:hover {
+    background-color: #ff9f4a; /* Изменение цвета при наведении */
+}
+
+.tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 10px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 100;
+    width: 400px;
+    color: #000000;
+    pointer-events: none;
+}
+.chat-area.inactive {
+    background-color: #d3d3d3; /* Серый фон */
+    pointer-events: none; /* Запрещаем взаимодействие с элементами */
+}
+
+.chat-area.inactive input,
+.chat-area.inactive button {
+    background-color: #f0f0f0; /* Серые кнопки и поля ввода */
+    color: #888; /* Серый текст */
+}
+
+.not-in-team-message {
+    background-color: #ebb842;
+    color: #721c24;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px;
+    border: 1px solid #f5c6cb;
+    text-align: center;
+    border-radius: 5px;
+    width: 33%;
+    position: fixed;
+    top: 54%;
+    left: 55.5%;
+    transform: translateX(-50%);
+    z-index: 9999; /* Повышенный z-index */
+}
+.tooltip.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.user-name:hover .tooltip {
+    display: block; /* Показываем всплывающее окно при наведении */
+}
+
 .participants {
     background-color: #f1f1f1;
     padding: 10px;
-    height: 680px;
+    height: 55%; /* Используем всю высоту контейнера */
     width: 200px; /* Ширина списка участников */
     border-right: 1px solid #ddd;
     overflow-y: auto; /* Прокрутка для участников */
+    display: flex;
+    flex-direction: column;
+}
+.participants-requests-container {
+    display: flex;
+    flex-direction: column; /* Располагаем участников и запросы вертикально */
+    height: 100%; /* Высота равна высоте родительского контейнера */
+    width: 200px; /* Ширина контейнера для участников и запросов */
 }
 
+/* Пример стиля для неактивного чата */
+.chat-area.inactive {
+    opacity: 1;  /* Можно скрыть чат или изменить его внешний вид */
+}
 .participants h3 {
     margin-bottom: 15px; /* Увеличенный отступ под заголовком */
     font-family: Arial, sans-serif;
@@ -57,7 +194,17 @@ html, body {
     padding: 8px 0; /* Увеличенные отступы между участниками */
     border-bottom: 1px solid #ddd; /* Разделительная линия между участниками */
 }
+button.disabled {
+    background-color: gray !important; /* Цвет фона для неактивной кнопки */
+    color: white; /* Цвет текста для неактивной кнопки */
+    cursor: not-allowed; /* Указатель на недоступный элемент */
+    opacity: 0.6; /* Полупрозрачность для визуального эффекта неактивности */
+}
 
+button.disabled:hover {
+    cursor: not-allowed; /* Делаем курсор таким же при наведении */
+    background-color: gray; /* Убедитесь, что цвет фона остается одинаковым */
+}
 .participants li:last-child {
     border-bottom: none; /* Удаление разделителя у последнего участника */
 }

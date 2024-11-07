@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class ChatController {
+public class ChatSetting {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;

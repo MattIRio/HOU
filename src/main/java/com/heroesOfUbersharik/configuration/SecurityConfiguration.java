@@ -32,7 +32,7 @@ public class SecurityConfiguration implements WebSocketMessageBrokerConfigurer {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/login", "/mainpage", "/images/regPage.png", "/video/video.mp4", "/register", "/css/**", "/images/google.png", "/images/git.png", "/images/main.png", "/images/logo.png", "/oauth2/authorization/github", "/oauth2/authorization/google", "/oauth2/**").permitAll();
+                    registry.requestMatchers("/login","/mainpage", "/images/regPage.png", "/video/video.mp4", "/register", "/css/**", "/images/google.png", "/images/git.png", "/images/main.png", "/images/logo.png", "/oauth2/authorization/github", "/oauth2/authorization/google", "/oauth2/**").permitAll();
                     registry.requestMatchers("/profileform", "/mainpage").authenticated();
                     registry.anyRequest().authenticated();
                 })

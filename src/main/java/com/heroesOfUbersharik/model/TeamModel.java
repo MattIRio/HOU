@@ -33,8 +33,15 @@ public class TeamModel {
     @Column(nullable = false)
     String teamsPlayingTime;
 
-    @Column()
+    @Column(nullable = false)
     Integer amountOfMembers;
+
+    @Column()
+    Integer requestsAmount;
+
+    Boolean isButtonActive;
+
+
 
     public Integer getAmountOfMembers() {
         return amountOfMembers;
@@ -104,18 +111,44 @@ public class TeamModel {
         return teamsCreatorID;
     }
 
+    public Integer getRequests_amount() {
+        return requestsAmount;
+    }
+
+    public void setRequests_amount(Integer requests_amount) {
+        requestsAmount = requests_amount;
+    }
+
     public void setTeamsCreatorID(Integer teamsCreator) {
         this.teamsCreatorID = teamsCreator;
     }
 
-    public TeamModel(String teamsPlayingTime, String teamsPlayingDays, String teamsGameMode, String teamsDifficulty, String teamsCountry, String teamName) {
-        this.teamsPlayingTime = teamsPlayingTime;
-        this.teamsPlayingDays = teamsPlayingDays;
-        this.teamsGameMode = teamsGameMode;
-        this.teamsDifficulty = teamsDifficulty;
-        this.teamsCountry = teamsCountry;
-        this.teamName = teamName;
+    public Integer getRequestsAmount() {
+        return requestsAmount;
     }
+
+    public void setRequestsAmount(Integer requestsAmount) {
+        this.requestsAmount = requestsAmount;
+    }
+
+    public Boolean getButtonActive() {
+        return isButtonActive;
+    }
+
+    public void setButtonActive(Boolean buttonActive) {
+        isButtonActive = buttonActive;
+    }
+
+    public TeamModel(String teamName, String teamsCountry, String teamsDifficulty, String teamsGameMode, String teamsPlayingDays, String teamsPlayingTime, Boolean isButtonActive) {
+        this.teamName = teamName;
+        this.teamsCountry = teamsCountry;
+        this.teamsDifficulty = teamsDifficulty;
+        this.teamsGameMode = teamsGameMode;
+        this.teamsPlayingDays = teamsPlayingDays;
+        this.teamsPlayingTime = teamsPlayingTime;
+        this.isButtonActive = isButtonActive;
+    }
+
     public TeamModel() {
 
     }

@@ -1,14 +1,15 @@
 package com.heroesOfUbersharik.controller;
 
-import com.heroesOfUbersharik.model.MyUser;
-import com.heroesOfUbersharik.model.MyUserDetailService;
-import com.heroesOfUbersharik.model.TeamModel;
+import com.heroesOfUbersharik.model.*;
+import com.heroesOfUbersharik.repository.MyTeamMembersRepository;
 import com.heroesOfUbersharik.repository.MyTeamRepository;
+import com.heroesOfUbersharik.repository.MyTeamRequestsRepository;
 import com.heroesOfUbersharik.repository.MyUserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +28,17 @@ public class MainPageController {
     private MyUserRepository userRepository;
     @Autowired
     private MyTeamRepository teamRepository;
-
+    @Autowired
+    private MyTeamMembersRepository teamMembersRepository;
+    @Autowired
+    private MyTeamRequestsRepository requestsRepository;
 
 
     @GetMapping("/mainpage")
     public String handleAdminHome(@AuthenticationPrincipal UserDetails userDetails, Model model, HttpSession session) {
         session.setAttribute("username", userRepository.findByEmail(userDetails.getUsername()).get().getName());
+
+
 
         model.addAttribute("Name", userRepository.findByEmail(userDetails.getUsername()).get().getName());
         model.addAttribute("Country", userRepository.findByEmail(userDetails.getUsername()).get().getCountry());
@@ -45,7 +51,30 @@ public class MainPageController {
         model.addAttribute("time", userRepository.findByEmail(userDetails.getUsername()).get().getPlayingHours());
         model.addAttribute("Difficulty", userRepository.findByEmail(userDetails.getUsername()).get().getDifficulty());
 
+//        if (teamMembersRepository.findByTeamsMemberID(userRepository.findByEmail(userDetails.getUsername()).get().getId()).isPresent()){
+//            session.setAttribute("chatIsAvailable",  );
+//        }
+//
+//        session.setAttribute("chatIsAvailable", );
         return "mainpage";
+    }
+    @GetMapping("/mainpage/teammembers")
+    public ResponseEntity<Map<String, Object>> teammembers(@AuthenticationPrincipal UserDetails currentUser) {
+        ArrayList<MyUser> membersModelArrayList = new ArrayList<>();
+
+        Optional<MyUser> localUser = userRepository.findByEmail(currentUser.getUsername());
+        Optional<TeamModel> currentTeam = teamRepository.findByTeamsCreatorID(localUser.get().getId());
+
+
+        for (TeamMembersModel membersModel : teamMembersRepository.findAll()) {
+            if (membersModel.getTeamOwnerId() == localUser.get().getId()) {
+                MyUser trueUser = userRepository.findByid(membersModel.getMemberId()).get();
+                membersModelArrayList.add(trueUser);
+            }
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("members", membersModelArrayList);
+        return ResponseEntity.ok(response);
     }
 
 
