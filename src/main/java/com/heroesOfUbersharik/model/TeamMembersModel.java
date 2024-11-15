@@ -14,7 +14,7 @@ public class TeamMembersModel {
     private Long id;
 
 
-    @Column(name = "member_id")
+    @Column(name = "member_id", nullable = false)
     private Integer memberId;
 
     @Column(name = "team_owner_id", nullable = false)
@@ -22,6 +22,9 @@ public class TeamMembersModel {
 
     @Column(name = "team_name", nullable = false)
     private String teamName;
+
+    @Column(name = "is_notified")
+    private boolean isNotified = false;
 
     public TeamMembersModel() {
     }
@@ -38,7 +41,7 @@ public class TeamMembersModel {
     }
 
     public void setMemberId(Integer memberId) {
-        memberId = memberId;
+        this.memberId = memberId; // Исправлено: добавлено this
     }
 
     public Integer getTeamOwnerId() {
@@ -53,8 +56,16 @@ public class TeamMembersModel {
         return teamName;
     }
 
+    public boolean isNotified() {
+        return isNotified;
+    }
+
+    public void setNotified(boolean notified) {
+        isNotified = notified;
+    }
+
     public void setTeamName(String teamName) {
-        teamName = teamName;
+        this.teamName = teamName; // Исправлено: добавлено this
     }
 
     public TeamMembersModel(Integer memberId, Integer teamOwnerId, String teamName) {

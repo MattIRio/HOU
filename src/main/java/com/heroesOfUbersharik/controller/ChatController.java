@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,16 +36,32 @@ public class ChatController {
     private MyTeamRequestsRepository requestsRepository;
 
 
+    @GetMapping("/chatavalibility")
+    public ResponseEntity<Map<String, Object>> getChatRoomName(Principal principal) {
+        // Получаем userId на основе email
+        String userId = String.valueOf(userRepository.findByEmail(principal.getName()).get().getChatRoomId());
+        String roomName = "chat-room-" + userId;
 
-    @GetMapping("/mainpage/chatavalibility")
-    public ResponseEntity<Boolean>  isChatAvaliable(@AuthenticationPrincipal UserDetails currentUser) {
-        boolean response = false;
-        if (teamMembersRepository.findByMemberId(userRepository.findByEmail(currentUser.getUsername()).get().getId()).isPresent()){
-            response = true;
+        // Пример проверки, является ли пользователь членом команды
+        boolean isMember = false;
+        if (teamMembersRepository.findByMemberId(userRepository.findByEmail(principal.getName()).get().getId()).isPresent()){
+            isMember = true;
         }
 
-        System.out.println(response);
-        return ResponseEntity.ok(response);
+        // Возвращаем объект с roomName и флагом isMember
+        return ResponseEntity.ok(Map.of("roomName", roomName, "isMember", isMember));
+    }
+
+    @GetMapping("/chatavalibility1")
+    public ResponseEntity getChatRoomName1(Principal principal) {
+
+        boolean isMember = false;
+        if (teamMembersRepository.findByMemberId(userRepository.findByEmail(principal.getName()).get().getId()).isPresent()){
+            isMember = true;
+        }
+
+        // Возвращаем объект с roomName и флагом isMember
+        return ResponseEntity.ok(isMember);
     }
 
 }

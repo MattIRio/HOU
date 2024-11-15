@@ -53,45 +53,117 @@ html, body {
     border-right: 1px solid #ddd;
      border-top: 1px solid #000000;
 }
+.fetch-requests-icon {
+    font-size: 20px; /* Размер иконки */
+    cursor: pointer;
+    margin-left: 10px; /* Отступ от текста */
+    color: #333; /* Цвет иконки */
+    transition: color 0.3s, transform 0.2s ease; /* Плавное изменение цвета и анимация при клике */
+}
+.fetch-requests-icon.clicked {
+    transform: scale(1.2) rotate(90deg);
+    color: red;
+}
+@keyframes rotateIcon {
+     from {
+         transform: rotate(0deg);
+     }
+     to {
+         transform: rotate(360deg);
+     }
+ }
+
+.fetch-requests-icon:hover {
+    color: #007bff; /* Цвет при наведении */
+}
+
+.fetch-requests-icon:active {
+    transform: scale(0.95); /* Уменьшаем размер иконки при нажатии */
+    color: #0056b3; /* Цвет при нажатии */
+}
 
 .user-name {
     display: inline-block;
     padding: 5px;
     background-color: #f18a22;
     color: white;
-    border-radius: 15px;
+    border-radius: 5px;
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
     border: 1.3px solid #000000;
     position: relative; /* Относительное позиционирование для всплывающего окна */
     cursor: pointer; /* Указатель на курсор */
     text-align: center;
 }
 
-.approve-btn {
+.approve-btn,
+.reject-btn {
     background-color: #92c13b; /* Цвет кнопки */
     color: white;
     border: none;
-    border-radius:15px;
+
     padding: 3px 6px;
     cursor: pointer;
     font-size: 13px;
-    margin-left: 0px; /* Отступ слева */
+    margin: 0; /* Убираем лишние отступы */
     transition: background-color 0.3s;
-    width: 100%;
+    width: 50%; /* Каждая кнопка занимает половину ширины */
     border: 1.3px solid #000000;
+    display: block; /* Убедимся, что кнопки отображаются */
+}
+
+.reject-btn {
+    background-color: #e63946; /* Цвет кнопки Reject */
 }
 
 .approve-btn:hover {
     background-color: #abe83c;
 }
+
+.reject-btn:hover {
+    background-color: #ff5c63;
+}
+
 .user-name-container {
     display: flex;
-        flex-direction: column; /* Направляем элементы по вертикали */
-        align-items: flex-start; /* Выравнивание по левому краю */
-        margin-bottom: 10px;
-    position: relative;
-    width: 100%;
+    flex-direction: column; /* Элементы располагаются по вертикали */
+    align-items: center; /* Выравниваем элементы по центру */
+    justify-content: flex-start; /* Элементы размещаются сверху */
+    width: 100%; /* Ширина контейнера */
+    margin-bottom:0px; /* Уменьшаем отступ между элементами списка */
+    position: relative; /* Для правильного расположения */
+}
+
+/* Кнопка с символом "X" */
+.remove-button {
+    background-color: #e63946; /* Фон кнопки */
+    border: none;
+    color: ffffff;
+    font-size: 14px; /* Размер шрифта */
+    cursor: pointer;
+    width: 100%; /* Кнопка занимает 100% ширины контейнера */
+    padding: 5px 0; /* Отступы внутри кнопки */
+    text-align: center; /* Текст по центру */
+    margin-top: 3px; /* Уменьшаем отступ сверху, чтобы кнопка была ближе к имени */
+    margin-bottom: 0; /* Убираем отступ снизу */
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+}
+.remove-button:hover {
+    background-color: #d62828; /* Более насыщенный красный при наведении */
+    color: #f1faee; /* Светлый текст при наведении */
+}
+
+/* Эффект при нажатии */
+.remove-button:active {
+    background-color: #b71d22; /* Темный красный при нажатии */
+}
+
+
+.user-name-container-flex {
+    display: flex;
+    align-items: center; /* Центрируем элементы по вертикали */
+    justify-content: space-between; /* Располагаем элементы с обеих сторон */
 }
 
 .user-name:hover {
@@ -152,7 +224,7 @@ html, body {
 
 .participants {
     background-color: #f1f1f1;
-    padding: 10px;
+    padding: 0px;
     height: 55%; /* Используем всю высоту контейнера */
     width: 200px; /* Ширина списка участников */
     border-right: 1px solid #ddd;
@@ -415,18 +487,47 @@ h3 {
             gap: 0; /* Кнопки вплотную */
         }
 .sort-buttons button {
-            flex: 1;
-            padding: 12px;
-            cursor: pointer;
-            font-size: 1em;
-            background-color: #bf6618;
-            color: white;
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-        .sort-buttons button:hover {
-                    background-color: #0056b3;
-                }
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    background-color: #d67826;
+    border: 1px solid #bf6618;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Добавлен переход для масштаба */
+}
+
+.sort-buttons button:hover {
+    background-color: #ec3b1f;
+}
+
+.sort-buttons button:active {
+    background-color: #bf6618; /* Более темный оттенок при нажатии */
+    transform: scale(0.95); /* Эффект уменьшения */
+}
+
+
+  .refresh-button {
+      flex: 1;
+      padding: 12px;
+      cursor: pointer;
+      font-size: 1em;
+      background-color: #82b628;
+      border: 1px solid #000;
+      color: white;
+      transition: background-color 0.3s ease, transform 0.1s ease; /* Добавлен переход для масштаба */
+  }
+
+  .refresh-button:hover {
+      background-color: #b9e75c; /* Цвет при наведении */
+      border-color: #ff5733;
+  }
+
+  .refresh-button:active {
+      background-color: #6fa923; /* Более темный оттенок для эффекта нажатия */
+      transform: scale(0.95); /* Эффект уменьшения */
+  }
+
 
 
 .object-card {
@@ -522,7 +623,7 @@ h3 {
         .navbar-title {
             flex: 1;
             text-align: center;
-            padding-left: 350px;
+            padding-left: 280px;
         }
 
         .navbar-title h1 {
@@ -532,12 +633,12 @@ h3 {
 
         .navbar-buttons {
             display: flex;
-            gap: 10px;
-            margin-right: 20px;
+            gap: 3px !important;
+            margin-right: 1px;
         }
 
         .nav-button {
-            margin-left: 10px;
+            margin-left: 6px !important;
             padding: 10px 20px;
             font-size: 16px;
             background-color: rgba(255, 255, 255, 0.2);
@@ -548,6 +649,26 @@ h3 {
             transition: background-color 0.3s;
         }
 
+
+   .nav-button3 {
+       padding: 10px 20px !important;
+       font-size: 16px !important;
+       background-color: #bf6618 !important;
+       color: white !important;
+       border: 1px solid #985113 !important;
+       border-radius: 5px !important;
+       cursor: pointer !important;
+       transition: background-color 0.3s !important;
+       width: 100% !important;
+   }
+
+   .nav-button3:hover {
+       background-color: #a25712 !important; /* Пример изменения цвета при наведении */
+   }
+
+   .nav-button3:active {
+       background-color: #8f4b0c !important; /* Пример изменения цвета при нажатии */
+   }
         .nav-button1 {
             margin-left: 140px;
             padding: 10px 20px;
@@ -560,6 +681,14 @@ h3 {
             transition: background-color 0.3s;
         }
 
+.nav-button2:hover {
+    background-color: #61e615; /* Цвет фона при наведении */
+    border-color: #00000; /* Цвет границы при наведении */
+}
+.nav-button3:hover {
+    background-color: #e61515; /* Цвет фона при наведении */
+    border-color: #00000; /* Цвет границы при наведении */
+}
         .nav-button:hover {
             background-color: rgba(0, 0, 0, 0.4);
         }
@@ -574,6 +703,27 @@ h3 {
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                 position: relative;
             }
+.side-container {
+    position: absolute;
+    left: -36%; /* Сместите на нужное значение, например, -25% ширины */
+    top: 0;
+    width: 35%;
+    height: 100%;
+    background-color: rgba(255, 228, 196, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border: 1px solid #000000;
+}
+
+.inner-side-container {
+    width: 100%;
+    height: 100%;
+    background-color: #dfddd7;
+    border-radius: 8px; /* Немного меньше, чем у side-container */
+    padding: 10px;
+    box-sizing: border-box; /* Чтобы отступы не влияли на размеры */
+}
 
       .input-group {
     display: flex;
@@ -582,12 +732,32 @@ h3 {
     margin-bottom: 5px; /* Добавить отступ между полями */
     color: white;
 }
+.input-group {
+    margin-bottom: 15px; /* Отступ снизу между полями */
+}
 
+label {
+    display: block; /* Делает метку блочной */
+    color: #333; /* Цвет текста метки */
+    margin-bottom: 5px; /* Отступ снизу от метки */
+}
+input[type="text"]:focus {
+    border-color: #007BFF; /* Цвет границы при фокусе */
+    outline: none; /* Убираем стандартный контур фокуса */
+}
 .input-group label {
     display: block; /* Сделать label блочным элементом для переноса на новую строку */
     margin-bottom: 5px; /* Отступ между label и полем ввода */
 }
-
+input[type="text"] {
+    width: 100%; /* Ширина поля ввода */
+    padding: 10px; /* Внутренние отступы поля */
+    border: 1px solid #ccc; /* Цвет границы */
+    border-radius: 4px; /* Скругление углов поля ввода */
+    font-size: 14px; /* Размер шрифта */
+    box-sizing: border-box; /* Для учета внутренних отступов в ширине */
+    transition: border-color 0.3s; /* Плавное изменение цвета границ */
+}
 .option-list {
     width: 95%;
     border: 1px solid #ccc; /* Добавить границу */
@@ -622,7 +792,20 @@ h3 {
     height: auto; /* Авто высота */
     min-height: 20px; /* Минимальная высота для отображения нескольких выбранных элементов */
 }
+button {
+    background-color: #007BFF; /* Цвет кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Убираем границу */
+    border-radius: 4px; /* Скругление углов кнопки */
+    padding: 10px 20px; /* Внутренние отступы кнопки */
+    cursor: pointer; /* Указатель при наведении */
+    font-size: 16px; /* Размер шрифта в кнопке */
+    transition: background-color 0.3s; /* Плавное изменение цвета фона кнопки */
+}
 
+button:hover {
+    background-color: #0056b3; /* Цвет кнопки при наведении */
+}
         .edit-button {
             padding: 10px 15px;
             font-size: 14px;
@@ -640,6 +823,48 @@ h3 {
     border-radius: 5px; /* Закруглить углы */
     margin-bottom: 10px; /* Увеличить отступ между полями */
     cursor: pointer; /* Указатель курсора при наведении */
+}
+#notifications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 600px;
+
+    overflow-y: hidden;
+}
+
+/* Стили для каждого уведомления */
+.notification-item {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#new-form-container {
+    display: none; /* Скрываем контейнер с уведомлениями по умолчанию */
+}
+/* Стили для кнопки внутри уведомления */
+.notification-item button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.notification-item button:hover {
+    background-color: #ddd;
+}
+
+/* Стили для текста уведомления */
+.notification-item .message {
+    font-size: 14px;
+    color: #333;
+    margin-right: 10px;
 }
         .profile-container {
             display: none; /* Скрыт по умолчанию */
@@ -670,7 +895,32 @@ h3 {
     font-size: 16px;
     border-radius: 5px;
 }
+.no-notifications {
+    font-size: 35px !important; /* Увеличиваем размер текста */
+    font-weight: bold; /* Делаем текст жирным */
+    text-align: center; /* Выравнивание по центру */
+    margin-top: 20px; /* Отступ сверху */
+    color: #555; /* Цвет текста */
+    padding: 10px; /* Внутренние отступы */
+    background-color: #f8f8f8; /* Легкий фон для выделения */
+    border-radius: 8px; /* Скругленные углы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень вокруг */
+    max-width: 400px; /* Максимальная ширина блока */
+    margin-left: auto; /* Центрирование по горизонтали */
+    margin-right: auto; /* Центрирование по горизонтали */
+}
+.notification-item button {
+    background-color: red; /* Цвет фона кнопки */
+    color: white; /* Цвет текста на кнопке */
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
+.notification-item button:hover {
+    background-color: darkred; /* Цвет кнопки при наведении */
+}
 #error-message {
     color: #ff4d4d;
     background-color: #ffe6e6;
@@ -709,7 +959,14 @@ h3 {
 .input-group-team {
     position: relative;
 }
-
+.new-form-container {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: 0 auto;
+}
 .input-group-team input {
     font-size: 16px; /* Настройте по желанию */
     padding: 10px; /* Настройте по желанию */
@@ -741,16 +998,7 @@ h3 {
     background-color: rgba(255, 255, 255, 0.4);
 }
 
-.container {
-    margin: 80px auto;
-    width: 50%;
-    height: 800px;
-    background-color: rgba(255, 228, 196, 0.9);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    position: relative;
-}
+
 
 .profile-container.active {
     display: block; /* Отображается, если активен */

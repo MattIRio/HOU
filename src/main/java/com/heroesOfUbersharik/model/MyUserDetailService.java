@@ -24,6 +24,7 @@ public class MyUserDetailService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     // проверяет есть ли пользователь с данным которые ввели на логин пейдже в датабазе
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

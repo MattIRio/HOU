@@ -9,7 +9,8 @@ public class TeamModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    @Column(nullable = false, unique = true)
+    Integer chatRoomId;
 
     @Column(nullable = false, unique = true)
     String teamName;
@@ -36,10 +37,13 @@ public class TeamModel {
     @Column(nullable = false)
     Integer amountOfMembers;
 
-    @Column()
-    Integer requestsAmount;
+    @Column(nullable = false)
+    Integer requestsAmount = 0;
+
 
     Boolean isButtonActive;
+
+
 
 
 
@@ -49,14 +53,6 @@ public class TeamModel {
 
     public void setAmountOfMembers(Integer amountOfMembers) {
         this.amountOfMembers = amountOfMembers;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTeamName() {
@@ -137,6 +133,14 @@ public class TeamModel {
 
     public void setButtonActive(Boolean buttonActive) {
         isButtonActive = buttonActive;
+    }
+
+    public Integer getChatRoomId() {
+        return chatRoomId;
+    }
+
+    public void setChatRoomId(Integer chatRoomId) {
+        this.chatRoomId = chatRoomId;
     }
 
     public TeamModel(String teamName, String teamsCountry, String teamsDifficulty, String teamsGameMode, String teamsPlayingDays, String teamsPlayingTime, Boolean isButtonActive) {

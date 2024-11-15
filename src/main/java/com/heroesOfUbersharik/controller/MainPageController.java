@@ -16,8 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.*;
 
 @Controller
@@ -37,19 +39,36 @@ public class MainPageController {
     @GetMapping("/mainpage")
     public String handleAdminHome(@AuthenticationPrincipal UserDetails userDetails, Model model, HttpSession session) {
         session.setAttribute("username", userRepository.findByEmail(userDetails.getUsername()).get().getName());
+        MyUser localUser = userRepository.findByEmail(userDetails.getUsername()).get();
+
+
+        model.addAttribute("Name", localUser.getName());
+        model.addAttribute("Country", localUser.getCountry());
+        model.addAttribute("English_level", localUser.getEnglishLvl());
+        model.addAttribute("Your_Main_Career", localUser.getMainCareer());
+        model.addAttribute("All_careers", localUser.getAllCareers());
+        model.addAttribute("Difficulty", localUser.getDifficulty());
+        model.addAttribute("Game_mode", localUser.getGameMode());
+        model.addAttribute("Days", localUser.getPlayingDays());
+        model.addAttribute("time", localUser.getPlayingHours());
+        model.addAttribute("Difficulty", localUser.getDifficulty());
+
+
+        if (localUser.getChatRoomId() != null){
+            Optional <TeamModel> usersTeam = teamRepository.findBychatRoomId(localUser.getChatRoomId());
+
+            model.addAttribute("teamName",usersTeam.get().getTeamName());
+            model.addAttribute("teamDifficulty", usersTeam.get().getTeamsDifficulty());
+            model.addAttribute("teamCountry", usersTeam.get().getTeamsCountry());
+            model.addAttribute("teamGameMode", usersTeam.get().getTeamsGameMode());
+            model.addAttribute("teamPlayingTime", usersTeam.get().getTeamsPlayingTime());
+            model.addAttribute("teamPlayingDays", usersTeam.get().getTeamsPlayingDays());
+
+
+        }
 
 
 
-        model.addAttribute("Name", userRepository.findByEmail(userDetails.getUsername()).get().getName());
-        model.addAttribute("Country", userRepository.findByEmail(userDetails.getUsername()).get().getCountry());
-        model.addAttribute("English_level", userRepository.findByEmail(userDetails.getUsername()).get().getEnglishLvl());
-        model.addAttribute("Your_Main_Career", userRepository.findByEmail(userDetails.getUsername()).get().getMainCareer());
-        model.addAttribute("All_careers", userRepository.findByEmail(userDetails.getUsername()).get().getAllCareers());
-        model.addAttribute("Difficulty", userRepository.findByEmail(userDetails.getUsername()).get().getDifficulty());
-        model.addAttribute("Game_mode", userRepository.findByEmail(userDetails.getUsername()).get().getGameMode());
-        model.addAttribute("Days", userRepository.findByEmail(userDetails.getUsername()).get().getPlayingDays());
-        model.addAttribute("time", userRepository.findByEmail(userDetails.getUsername()).get().getPlayingHours());
-        model.addAttribute("Difficulty", userRepository.findByEmail(userDetails.getUsername()).get().getDifficulty());
 
 //        if (teamMembersRepository.findByTeamsMemberID(userRepository.findByEmail(userDetails.getUsername()).get().getId()).isPresent()){
 //            session.setAttribute("chatIsAvailable",  );
@@ -67,7 +86,7 @@ public class MainPageController {
 
 
         for (TeamMembersModel membersModel : teamMembersRepository.findAll()) {
-            if (membersModel.getTeamOwnerId() == localUser.get().getId()) {
+            if (membersModel.getTeamOwnerId() == teamMembersRepository.findByMemberId(localUser.get().getId()).get().getTeamOwnerId()) {
                 MyUser trueUser = userRepository.findByid(membersModel.getMemberId()).get();
                 membersModelArrayList.add(trueUser);
             }
@@ -115,5 +134,20 @@ public class MainPageController {
 
             userRepository.save(existingUser);
             return "redirect:/mainpage";
+    }
+    @RestController
+    public class UserController {
+
+        @GetMapping("/api/getuserid")
+        public ResponseEntity<Map<String, Object>> getUserId(Principal principal) {
+
+
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", userRepository.findByEmail(principal.getName()).get().getId());
+
+
+            return ResponseEntity.ok(response);
+        }
     }
 }

@@ -1,18 +1,21 @@
 package com.heroesOfUbersharik.controller;
 
 import com.heroesOfUbersharik.model.*;
-import com.heroesOfUbersharik.repository.MyTeamMembersRepository;
-import com.heroesOfUbersharik.repository.MyTeamRepository;
-import com.heroesOfUbersharik.repository.MyTeamRequestsRepository;
-import com.heroesOfUbersharik.repository.MyUserRepository;
+import com.heroesOfUbersharik.repository.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -29,13 +32,18 @@ public class TeamController {
     @Autowired
     private MyTeamMembersRepository membersRepository;
 
+    @Autowired
+    MyNotificationRepository notificationRepository;
+
+    @Transactional
     @PostMapping("/submitForm2")
-    public ResponseEntity<Map<String, Object>> addDataToTeamProfile(@ModelAttribute MyUser userModel, @AuthenticationPrincipal UserDetails userDetails, @ModelAttribute TeamModel teamModel) {
+    public ResponseEntity<Map<String, Object>> addDataToTeamProfile(@ModelAttribute MyUser userModel, @AuthenticationPrincipal UserDetails userDetails, @ModelAttribute TeamModel teamModel, Model model) {
 
         Optional<MyUser> user = userRepository.findByEmail(userDetails.getUsername());
         Map<String, Object> response = new HashMap<>();
         MyUser existingUser = user.get();
         TeamModel existingTeamModel = new TeamModel();
+        TeamMembersModel membersModel = new TeamMembersModel();
 
 
         if (teamRepository.findByTeamsCreatorID(existingUser.getId()).isPresent()) {
@@ -75,20 +83,67 @@ public class TeamController {
         if (teamModel.getTeamsPlayingDays() != "" && teamModel.getTeamsPlayingDays() != null) {
             existingTeamModel.setTeamsPlayingDays(teamModel.getTeamsPlayingDays());
         }
+
+
+        membersModel.setMemberId(user.get().getId());
+        System.out.println(user.get().getId());
+        membersModel.setTeamName(teamModel.getTeamName());
+        System.out.println();
+        membersModel.setTeamOwnerId(user.get().getId());
+
+        MyNotification newNotification = new MyNotification();
+
+        newNotification.setMessage("You've created a team <b>" + teamModel.getTeamName() +"</b>");
+        newNotification.setUserId(user.get().getId());
+
+        notificationRepository.save(newNotification);
+
+        membersRepository.save(membersModel);
         existingTeamModel.setAmountOfMembers(1);
         teamRepository.save(existingTeamModel);
         response.put("success", true);
 
+        user.get().setChatRoomId(existingTeamModel.getChatRoomId());
+
         return ResponseEntity.ok(response);
     }
 
+
     @GetMapping("/mainpage/teams")
-    public ResponseEntity<ArrayList <TeamModel>> teamList(@AuthenticationPrincipal TeamModel teamModel, @AuthenticationPrincipal UserDetails localuser) {
-        ArrayList <TeamModel> teamMap = new ArrayList<>();
-        List<TeamModel> allTeams = teamRepository.findAll();
+    public ResponseEntity<ArrayList<TeamModel>> teamList(@RequestParam(value = "sortBy", required = false) String sortBy, @AuthenticationPrincipal TeamModel teamModel, @AuthenticationPrincipal UserDetails localuser) {
+        ArrayList<TeamModel> teamMap = new ArrayList<>();
+        List<TeamModel> sortedTeams = new ArrayList<>();
 
 
-        for (TeamModel currentUser : allTeams) {
+        if (sortBy != null) {
+            switch (sortBy.toLowerCase()) {
+                case "name":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamName"));
+                    break;
+                case "country":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamsCountry"));
+                    break;
+                case "difficulty":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamsDifficulty"));
+                    break;
+                case "gamemode":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamsGameMode"));
+                    break;
+                case "playingdays":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamsPlayingDays"));
+                    break;
+                case "playingtime":
+                    sortedTeams = teamRepository.findAll(Sort.by(Sort.Direction.ASC, "teamsPlayingTime"));
+                    break;
+                default:
+                    sortedTeams = teamRepository.findAll();
+            }
+        } else {
+            sortedTeams = teamRepository.findAll();
+        }
+
+
+        for (TeamModel currentUser : sortedTeams) {
             Boolean isActive = true;
             if (userRepository.findByEmail(localuser.getUsername()).get().getId() == currentUser.getTeamsCreatorID()) {              //IF USER IS OWNER
                 isActive = false;
@@ -96,19 +151,20 @@ public class TeamController {
                 isActive = false;
             }
 
-                TeamModel teamModel1 = new TeamModel(
-                        currentUser.getTeamName(),
-                        currentUser.getTeamsCountry(),
-                        currentUser.getTeamsDifficulty(),
-                        currentUser.getTeamsGameMode(),
-                        currentUser.getTeamsPlayingDays(),
-                        currentUser.getTeamsPlayingTime(),
-                        isActive);
-                teamMap.add(teamModel1);
+            TeamModel teamModel1 = new TeamModel(
+                    currentUser.getTeamName(),
+                    currentUser.getTeamsCountry(),
+                    currentUser.getTeamsDifficulty(),
+                    currentUser.getTeamsGameMode(),
+                    currentUser.getTeamsPlayingDays(),
+                    currentUser.getTeamsPlayingTime(),
+                    isActive);
+            teamMap.add(teamModel1);
 
         }
 
-            return ResponseEntity.ok(teamMap);
+
+        return ResponseEntity.ok(teamMap);
     }
 
     @PostMapping("/joinrequest")
@@ -116,6 +172,13 @@ public class TeamController {
         Map<String, Object> response = new HashMap<>();
         Optional<TeamModel> currentTeamOpt = teamRepository.findByTeamName(teamModel.getTeamName());
 
+        Optional<MyUser> localUser = userRepository.findByEmail(currentUser.getUsername());
+
+        if (membersRepository.findByMemberId(localUser.get().getId()).isPresent()) {
+            response.put("message", "User is already a member");  // Используем ключ "message"
+            response.put("success", false);
+            return ResponseEntity.ok(response);
+        }
 
         TeamModel currentTeam = currentTeamOpt.get();
         currentTeam.setRequests_amount(currentTeam.getRequests_amount() + 1);
@@ -125,41 +188,48 @@ public class TeamController {
                 currentTeam.getTeamsCreatorID(),
                 LocalDate.now()
         );
+        MyNotification newNotification = new MyNotification();
+        newNotification.setMessage("You've requested to join team <b>" + teamModel.getTeamName() + "</b>");
+        newNotification.setUserId(userRepository.findByEmail(currentUser.getUsername()).get().getId());
+
+        notificationRepository.save(newNotification);
+
         requestsRepository.save(teamRequestModel);
         response.put("success", true);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/mainpage/requestsList")
-    public ResponseEntity<ArrayList <MyUser>> requestList(@AuthenticationPrincipal TeamModel teamModel, @AuthenticationPrincipal UserDetails localuser) {
-        ArrayList <MyUser> requestMap = new ArrayList<>();
+    public ResponseEntity<ArrayList<MyUser>> requestList(@AuthenticationPrincipal TeamModel teamModel, @AuthenticationPrincipal UserDetails localuser) {
+        ArrayList<MyUser> requestMap = new ArrayList<>();
         List<TeamRequestModel> allTeams = requestsRepository.findAll();
 
 
         for (TeamRequestModel currentUser : allTeams) {
             Boolean isActive = true;
-           if (currentUser.getTeamOwnerId() == userRepository.findByEmail(localuser.getUsername()).get().getId()){
-               MyUser localUser = userRepository.findByid(currentUser.getSenderId()).get();
+            if (currentUser.getTeamOwnerId() == userRepository.findByEmail(localuser.getUsername()).get().getId()) {
+                MyUser localUser = userRepository.findByid(currentUser.getSenderId()).get();
 
-               MyUser userModel = new MyUser(
-                       localUser.getName(),
-                       localUser.getCountry(),
-                       localUser.getEnglishLvl(),
-                       localUser.getMainCareer(),
-                       localUser.getAllCareers(),
-                       localUser.getPlayingHours(),
-                       localUser.getPlayingDays(),
-                       localUser.getDifficulty(),
-                       localUser.getGameMode());
-               requestMap.add(userModel);
-           }
+                MyUser userModel = new MyUser(
+                        localUser.getName(),
+                        localUser.getCountry(),
+                        localUser.getEnglishLvl(),
+                        localUser.getMainCareer(),
+                        localUser.getAllCareers(),
+                        localUser.getPlayingHours(),
+                        localUser.getPlayingDays(),
+                        localUser.getDifficulty(),
+                        localUser.getGameMode());
+                requestMap.add(userModel);
+            }
         }
 
         return ResponseEntity.ok(requestMap);
     }
 
+
     @Transactional
-    @PostMapping ("/mainpage/addmember")
+    @PostMapping("/mainpage/addmember")
     public ResponseEntity<Map<String, Object>> addmember(@RequestParam String userName, @AuthenticationPrincipal UserDetails currentUser) {
         ArrayList<TeamRequestModel> requestModelArrayList = new ArrayList<>();
         ArrayList<MyUser> membersModelArrayList = new ArrayList<>();
@@ -168,8 +238,8 @@ public class TeamController {
         Optional<TeamModel> currentTeam = teamRepository.findByTeamsCreatorID(localUser.get().getId());
 
 
-        currentTeam.get().setRequests_amount(currentTeam.get().getRequestsAmount() -1);
-        currentTeam.get().setAmountOfMembers(currentTeam.get().getAmountOfMembers() +1);
+        currentTeam.get().setRequests_amount(currentTeam.get().getRequestsAmount() - 1);
+        currentTeam.get().setAmountOfMembers(currentTeam.get().getAmountOfMembers() + 1);
 
 
         requestsRepository.deleteBySenderId(userRepository.findByName(userName).get().getId());
@@ -177,15 +247,31 @@ public class TeamController {
         TeamMembersModel member = new TeamMembersModel(userRepository.findByName(userName).get().getId(), localUser.get().getId(), teamRepository.findByTeamsCreatorID(localUser.get().getId()).get().getTeamName());
         membersRepository.save(member);
 
-        for (TeamRequestModel requestModel : requestsRepository.findAll()){
+        userRepository.findByName(userName).get().setChatRoomId(teamRepository.findByTeamsCreatorID(localUser.get().getId()).get().getChatRoomId());
+
+        for (TeamRequestModel requestModel : requestsRepository.findAll()) {
             requestModelArrayList.add(requestModel);
         }
-        for (TeamMembersModel membersModel : membersRepository.findAll()){
-            if (membersModel.getTeamOwnerId() == localUser.get().getId()){
+        for (TeamMembersModel membersModel : membersRepository.findAll()) {
+            if (membersModel.getTeamOwnerId() == localUser.get().getId()) {
                 MyUser trueUser = userRepository.findByid(membersModel.getMemberId()).get();
                 membersModelArrayList.add(trueUser);
             }
         }
+        MyNotification newNotification = new MyNotification();
+        MyNotification newNotification1 = new MyNotification();
+
+        newNotification.setMessage("You've added a member <b>" + userName + "</b> to your team");
+        newNotification.setUserId(localUser.get().getId());
+
+        newNotification1.setMessage("You've been added to a team <b>" + currentTeam.get().getTeamName() + "</b>");
+        newNotification1.setUserId(userRepository.findByName(userName).get().getId());
+
+        membersRepository.findByMemberId(userRepository.findByName(userName).get().getId()).get().setNotified(true);
+
+        notificationRepository.save(newNotification);
+        notificationRepository.save(newNotification1);
+
 
         Map<String, Object> response = new HashMap<>();
         response.put("requests", requestModelArrayList);
@@ -194,4 +280,59 @@ public class TeamController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/mainpage/deleteTeam")
+    public String deleteTeam(Principal principal) {
+        Optional<MyUser> localUser = userRepository.findByEmail(principal.getName());
+        Optional<TeamModel> localTeam = teamRepository.findBychatRoomId(localUser.get().getChatRoomId());
+        List<MyUser> usersArray = userRepository.findAllBychatRoomId(localTeam.get().getChatRoomId());
+        List<TeamRequestModel> requestArray = requestsRepository.findAllByTeamOwnerId(localUser.get().getId());
+        for (MyUser user : usersArray) {
+            user.setChatRoomId(null);
+        }
+
+
+        for (MyUser user : usersArray) {
+            if (user.getId() == localTeam.get().getTeamsCreatorID()) {
+                MyNotification newNotification = new MyNotification();
+                newNotification.setMessage("You've deleted a team <b>" + localTeam.get().getTeamName()+ "</b>");
+                newNotification.setUserId(localUser.get().getId());
+                notificationRepository.save(newNotification);
+            } else {
+                MyNotification newNotification = new MyNotification();
+                newNotification.setMessage("Your team <b>" + localTeam.get().getTeamName() + "</b> was deleted");
+                newNotification.setUserId(user.getId());
+                notificationRepository.save(newNotification);
+            }
+
+            membersRepository.deleteAll(membersRepository.findAllByTeamName(localTeam.get().getTeamName()));
+            requestsRepository.deleteAll(requestArray);
+            teamRepository.delete(localTeam.get());
+        }
+        return "redirect:/mainpage";
+    }
+
+    @GetMapping("/isowner")
+    public ResponseEntity isOwner(Principal principal) {
+        MyUser localUser = userRepository.findByEmail(principal.getName()).get();
+        boolean response = false;
+        TeamModel localTeam = teamRepository.findBychatRoomId(localUser.getChatRoomId()).get();
+
+        if (localTeam.getTeamsCreatorID() == localUser.getId()){
+            response = true;
+        }
+        return ResponseEntity.ok(response);
+    }
+
+
+    @DeleteMapping("/deleteteammember/{id}")
+    @Transactional
+    public ResponseEntity deleteteammember(@PathVariable Integer id) {
+        MyUser localUser = userRepository.findByid(id).get();
+
+        membersRepository.deleteByMemberId(localUser.getId());
+        teamRepository.findBychatRoomId(localUser.getChatRoomId()).get().setAmountOfMembers(teamRepository.findBychatRoomId(localUser.getChatRoomId()).get().getAmountOfMembers() -1);
+        localUser.setChatRoomId(null);
+
+        return ResponseEntity.ok().build();
+    }
 }

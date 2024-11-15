@@ -1,9 +1,11 @@
 package com.heroesOfUbersharik.repository;
 
 import com.heroesOfUbersharik.model.MyUser;
+import com.heroesOfUbersharik.model.TeamMembersModel;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 // просто создание обьекта который представляет из себя указанны в app.prop базу данных
@@ -12,4 +14,5 @@ import java.util.Optional;
         Optional<MyUser> findByEmail(String email);
         Optional<MyUser> findByName(String name);
         Optional<MyUser> findByid(Integer id);
+        List<MyUser> findAllBychatRoomId(Integer chatRoomId);
     }
