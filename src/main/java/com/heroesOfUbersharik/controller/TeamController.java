@@ -4,6 +4,7 @@ import com.heroesOfUbersharik.model.*;
 import com.heroesOfUbersharik.repository.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -335,4 +336,54 @@ public class TeamController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/getmembername/{id}")
+    @Transactional
+    public ResponseEntity<String> getmembername(@PathVariable Integer id) {
+        MyUser localUser = userRepository.findByid(id).get();
+
+
+
+        return ResponseEntity.ok(localUser.getName());
+    }
+
+
+
+    @Transactional
+    @PostMapping("/mainpage/deleterequest")
+    public ResponseEntity deleteRequest(@RequestParam String userName, Principal principal) {
+        requestsRepository.deleteBySenderId(userRepository.findByName(userName).get().getId());
+
+        MyNotification newNotification = new MyNotification();
+        newNotification.setMessage("Your request to join the team<b> " + teamRepository.findByTeamsCreatorID(userRepository.findByEmail(principal.getName()).get().getId()).get().getTeamName() + "</b> has been denied");
+        newNotification.setUserId(userRepository.findByName(userName).get().getId());
+        notificationRepository.save(newNotification);
+
+        return ResponseEntity.ok("deleted");
+    }
+
+    @GetMapping("/mainpage/getallteammembersid")
+    public ResponseEntity<ArrayList> getAllTeamMembersId(Principal principal) {
+        List<TeamMembersModel> localTeam = membersRepository.findAllByTeamName(teamRepository.findByTeamsCreatorID(userRepository.findByEmail(principal.getName()).get().getId()).get().getTeamName());
+        ArrayList<Integer> idList = new ArrayList();
+        for (TeamMembersModel member : localTeam) {
+            if (member.getMemberId() != member.getTeamOwnerId()) {
+                idList.add(member.getMemberId());
+            }
+        }
+
+        return ResponseEntity.ok(idList);
+    }
+    @Transactional
+    @DeleteMapping("/mainpage/leaveteam")
+    public ResponseEntity<String> leaveteam(Principal principal) {
+        MyUser localUser = userRepository.findByEmail(principal.getName()).get();
+        teamRepository.findBychatRoomId(localUser.getChatRoomId()).get().setAmountOfMembers(teamRepository.findBychatRoomId(localUser.getChatRoomId()).get().getAmountOfMembers()-1);
+        membersRepository.deleteByMemberId(localUser.getId());
+        localUser.setChatRoomId(null);
+
+        return ResponseEntity.ok("deleted");
+    }
+
+
 }

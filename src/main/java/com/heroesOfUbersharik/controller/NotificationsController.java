@@ -50,6 +50,7 @@ public class NotificationsController {
                 iterator.remove(); // Удаляем с помощью Iterator
             }
         }
+        myNotificationRepository.saveAll(userNotifications);
 
         return userNotifications;
 

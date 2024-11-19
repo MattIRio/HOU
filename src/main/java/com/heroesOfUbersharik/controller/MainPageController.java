@@ -13,10 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -98,8 +95,9 @@ public class MainPageController {
 
 
     @PostMapping("/submitForm1")
-    public String addDataToUserProfile(@ModelAttribute MyUser userModel, @AuthenticationPrincipal UserDetails userDetails, @ModelAttribute TeamModel teamModel) {
-
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addDataToUserProfile(@ModelAttribute MyUser userModel, @AuthenticationPrincipal UserDetails userDetails, @ModelAttribute TeamModel teamModel) {
+        Map<String, Object> response = new HashMap<>();
         Optional<MyUser> user = userRepository.findByEmail(userDetails.getUsername());
 
             MyUser existingUser = user.get();
@@ -123,8 +121,7 @@ public class MainPageController {
         if (userModel.getMainCareer() != null){
             existingUser.setMainCareer(userModel.getMainCareer());}
 
-        if (userModel.getName() != null){
-            existingUser.setName(userModel.getName().substring(0, 1).toUpperCase() +userModel.getName().substring(1));}
+
 
         if (userModel.getPlayingDays() != null){
             existingUser.setPlayingDays(userModel.getPlayingDays());}
@@ -132,9 +129,22 @@ public class MainPageController {
         if (userModel.getPlayingHours() != null){
             existingUser.setPlayingHours(userModel.getPlayingHours());}
 
+        if (userModel.getName().length() <= 4 || userModel.getName().length() >= 20 ) {
+            response.put("success", false);
+            response.put("errorMessage", "The name must be 4 to 20 characters long");
+            return ResponseEntity.badRequest().body(response);
+        } else {
+            existingUser.setName(userModel.getName().substring(0, 1).toUpperCase() +userModel.getName().substring(1));
+        }
+
+
             userRepository.save(existingUser);
-            return "redirect:/mainpage";
+
+        response.put("success", true);
+        response.put("message", "Profile updated successfully.");
+        return ResponseEntity.ok(response);
     }
+
     @RestController
     public class UserController {
 

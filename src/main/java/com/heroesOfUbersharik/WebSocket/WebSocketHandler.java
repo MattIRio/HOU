@@ -44,4 +44,10 @@ import java.util.Set;
             messagingTemplate.convertAndSend("/main/" + userId, "delete");
         }
 
+        @MessageMapping("/teamdeleted")
+        public void handleTeamDelete(@Payload String userId) {
+
+            messagingTemplate.convertAndSend("/main/" + userId, "teamdeletedd");
+        }
+
     }

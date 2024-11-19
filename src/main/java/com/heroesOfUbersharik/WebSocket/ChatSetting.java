@@ -37,8 +37,6 @@ public class ChatSetting {
         String username = chatMessage.getSender();
         headerAccessor.getSessionAttributes().put("username", username);
 
-
-//        String userId = teamRepository.findByTeamsCreatorID() ;
         String userId = String.valueOf(userRepository.findByEmail(principal.getName()).get().getChatRoomId());
         String roomName = "chat-room-" + userId;
 
@@ -48,6 +46,26 @@ public class ChatSetting {
 
         return chatMessage; // Возвращаем сообщение обратно
     }
+
+
+    @MessageMapping("/chat.left")
+    public ChatMessageRename left(@Payload ChatMessageRename chatMessage,
+                                      SimpMessageHeaderAccessor headerAccessor,
+                                      Principal principal) {
+
+        String username = chatMessage.getSender();
+        headerAccessor.getSessionAttributes().put("username", username);
+
+        String userId = String.valueOf(userRepository.findByEmail(principal.getName()).get().getChatRoomId());
+        String roomName = "chat-room-" + userId;
+
+
+        messagingTemplate.convertAndSend("/main/" + roomName, chatMessage);
+
+
+        return chatMessage; // Возвращаем сообщение обратно
+    }
+
 
     @MessageMapping("/chat.send")
     public ChatMessageRename sendMessage(@Payload ChatMessageRename chatMessage, SimpMessageHeaderAccessor headerAccessor) {

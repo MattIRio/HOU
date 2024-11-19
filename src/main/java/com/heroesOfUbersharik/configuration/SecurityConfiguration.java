@@ -33,6 +33,7 @@ public class SecurityConfiguration implements WebSocketMessageBrokerConfigurer {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/login","/mainpage", "/images/regPage.png", "/video/video.mp4", "/register", "/css/**", "/images/google.png", "/images/git.png", "/images/main.png", "/images/logo.png", "/oauth2/authorization/github", "/oauth2/authorization/google", "/oauth2/**").permitAll();
+                    registry.requestMatchers("/login").anonymous();
                     registry.requestMatchers("/profileform", "/mainpage").authenticated();
                     registry.anyRequest().authenticated();
                 })
@@ -50,6 +51,7 @@ public class SecurityConfiguration implements WebSocketMessageBrokerConfigurer {
                             .successHandler(new AuthenticationSuccessHandler())
                             .defaultSuccessUrl("/profileform", true)
                             .permitAll();
+
                 })
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // Страница логина для OAuth2

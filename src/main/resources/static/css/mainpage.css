@@ -81,7 +81,38 @@ html, body {
     transform: scale(0.95); /* Уменьшаем размер иконки при нажатии */
     color: #0056b3; /* Цвет при нажатии */
 }
+.custom-alert {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
 
+.custom-alert .alert-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-alert button {
+  background-color: #84e75c;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.custom-alert button:hover {
+  background-color: #ff1a1a;
+}
 .user-name {
     display: inline-block;
     padding: 5px;
@@ -94,6 +125,7 @@ html, body {
     position: relative; /* Относительное позиционирование для всплывающего окна */
     cursor: pointer; /* Указатель на курсор */
     text-align: center;
+
 }
 
 .approve-btn,
@@ -669,17 +701,52 @@ h3 {
    .nav-button3:active {
        background-color: #8f4b0c !important; /* Пример изменения цвета при нажатии */
    }
-        .nav-button1 {
-            margin-left: 140px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid #985113;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+
+   .nav-button4 {
+          padding: 10px 20px !important;
+          font-size: 16px !important;
+          background-color: #bf6618 !important;
+          color: white !important;
+          border: 1px solid #985113 !important;
+          border-radius: 5px !important;
+          cursor: pointer !important;
+          transition: background-color 0.3s !important;
+          width: 100% !important;
+      }
+
+      .nav-button4:hover {
+          background-color: #a25712 !important; /* Пример изменения цвета при наведении */
+      }
+
+      .nav-button4:active {
+          background-color: #8f4b0c !important; /* Пример изменения цвета при нажатии */
+      }
+
+
+
+  .nav-button1 {
+      margin-left: 140px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid #985113;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s; /* Добавлен эффект для анимации нажатия */
+  }
+
+  /* Эффект при наведении */
+  .nav-button1:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Эффект при нажатии */
+  .nav-button1:active {
+      transform: scale(0.98) !important; /* Уменьшаем кнопку при нажатии */
+      background-color: rgba(255, 255, 255, 0.1) !important; /* Немного темнее при нажатии */
+  }
+
 
 .nav-button2:hover {
     background-color: #61e615; /* Цвет фона при наведении */
@@ -895,6 +962,16 @@ button:hover {
     font-size: 16px;
     border-radius: 5px;
 }
+#errorMessage, #successMessage {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    max-width: 300px;
+    margin: 10px auto;
+    word-wrap: break-word;
+    font-size: 16px;
+    border-radius: 5px;
+}
 .no-notifications {
     font-size: 35px !important; /* Увеличиваем размер текста */
     font-weight: bold; /* Делаем текст жирным */
@@ -932,6 +1009,19 @@ button:hover {
     background-color: #e8f5e9;
     border: 1px solid #4CAF50;
 }
+
+#errorMessage {
+    color: #ff4d4d;
+    background-color: #ffe6e6;
+    border: 1px solid #ff4d4d;
+}
+
+#successMessage {
+    color: #4CAF50;
+    background-color: #e8f5e9;
+    border: 1px solid #4CAF50;
+}
+
 #profileContainer {
     color: white;
 }

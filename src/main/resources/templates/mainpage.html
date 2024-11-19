@@ -19,6 +19,12 @@
 </head>
 <input type="hidden" id="username" th:value="${session.username}">
 <body onload="showChat()">
+<div id="custom-alert" class="custom-alert" style="display:none;">
+    <div class="alert-content">
+        <span id="alert-message"></span>
+        <button id="close-alert" onclick="closeAlert()">Ok</button>
+    </div>
+</div>
 <div class="navbar">
     <img src="/images/logo.png" alt="Description" class="navbar-image" />
     <div class="navbar-title">
@@ -51,7 +57,7 @@
 <form id="teamCreationForm" action="/submitForm2" method="post" onsubmit="submitForm(event)">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <div id="teamCreationContainer" class="profile-container">
-        <h2 style="color: #000000;">Team Creation Form</h2>
+        <h2 style="color: #ffffff;">Team Creation Form</h2>
 
         <div id="error-message" style="display:none; color: red;"></div>
         <div id="success-message" style="display:none; color: green;"></div>
@@ -61,7 +67,7 @@
         </div>
 
         <div class="input-group">
-            <label for="TeamsCountry">Team's Country:</label>
+            <label for="TeamsCountry" style="color: #ffffff;">Team's Country:</label>
             <input type="text" id="TeamsCountryInput" placeholder="Select a country" th:attr="data-value=${Country}" value="Choose your option" name="teamsCountry" onclick="toggleTeamsCountryOptions()"readonly  />
             <div id="TeamsCountryOptions" class="option-list" style="display: none;">
                 <div class="option" th:attr="data-value=${Country}" disabled selected th:text="${Country}" style="color: #62d110;"> </div>
@@ -125,7 +131,7 @@
 
 
         <div class="input-group">
-            <label for="TeamsDifficulty">The difficulty your team would like to play on:</label>
+            <label for="TeamsDifficulty" style="color: #ffffff;">The difficulty your team would like to play on:</label>
             <input type="text" id="TeamsDifficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" value="Choose your option" name="teamsDifficulty" onclick="toggleTeamsDifficultyOptions()" readonly />
             <div id="TeamsDifficultyOptions" class="option-list" style="display: none;">
                 <div class="option" data-value="Any">Any</div>
@@ -138,7 +144,7 @@
         </div>
 
         <div class="input-group">
-            <label for="TeamsGameMode">Game mode your team would like to play:</label>
+            <label for="TeamsGameMode" style="color: #ffffff;">Game mode your team would like to play:</label>
             <input type="text" id="TeamsGameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" value="Choose your option" name="TeamsGameMode" onclick="toggleTeamsGameModeOptions()"readonly  />
             <div id="TeamsGameModeOptions" class="option-list" style="display: none;">
                 <div class="option" data-value="Any">Any</div>
@@ -150,7 +156,7 @@
         </div>
 
         <div class="input-group">
-            <label for="TeamsPlayingDays">Days your team prefer to play:</label>
+            <label for="TeamsPlayingDays" style="color: #ffffff;">Days your team prefer to play:</label>
             <input type="text" id="TeamsPlayingDaysInput" th:attr="data-value=${Days}" value="Choose your option" placeholder="Select days" name="teamsPlayingDays" onclick="toggleTeamsPlayingDays()"readonly  />
             <div id="TeamsPlayingDaysOptions" class="option-list" style="display: none;">
                 <div class="option" data-value="Any">Any</div>
@@ -165,7 +171,7 @@
         </div>
 
         <div class="input-group">
-            <label for="TeamplayingHours">The time your team prefer to play:</label>
+            <label for="TeamplayingHours" style="color: #ffffff;">The time your team prefer to play:</label>
             <input type="text" id="TeamplayingHoursInput" th:attr="data-value=${TeamPlayingHours}" value="Choose your option" placeholder="Select time" name="teamsPlayingTime" onclick="toggleTeamHoursOptions()"readonly  />
             <div id="TeamplayingHoursOptions" class="option-list" style="display: none;">
                 <div class="option" data-value="Any">Any</div>
@@ -184,15 +190,16 @@
 
 
 
-<form id="profileForm" action="/submitForm1" method="post" onsubmit="submitForm(event)">
+<form id="profileForm" action="/submitForm1" method="POST">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div id="profileContainer" class="profile-container">
-        <h2>Profile information</h2>
+        <h2>Profile Information</h2>
 
         <div id="errorMessage" style="display: none; color: red;"></div>
+        <div id="successMessage" style="display: none; color: green;"></div>
 
     <div class="input-group">
-        <label for="Name">Name:</label>
+        <label for="Name" style="color: #ffffff;">Name:</label>
         <input type="text" id="NameInput" th:value="${Name}" name="name" />
     </div>
 
@@ -202,7 +209,7 @@
 
 
     <div class="input-group">
-        <label for="Country">Country:</label>
+        <label for="Country" style="color: #ffffff;">Country:</label>
         <input type="text" id="countryInput" placeholder="Select a country" th:attr="data-value=${Country}" th:value="${Country}" name="country" onclick="togglecountryOptions()"readonly  />
         <div id="countryOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Country}" disabled selected th:text="${Country}" style="color: #62d110;"> </div>
@@ -263,7 +270,7 @@
         </div>
     </div>
     <div class="input-group">
-        <label for="englishlvlInput">Can you communicate in English:</label>
+        <label for="englishlvlInput" style="color: #ffffff;">Can you communicate in English:</label>
         <input type="text" id="englishlvlInput"  th:attr="data-value=${English_level}" th:value="${English_level}"  name="englishLvl" onclick="toggleenglishlvlOptions()" readonly />
         <div id="englishlvlOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${English_level}" disabled selected th:text="${English_level}" style="color: #62d110;"> </div>
@@ -273,7 +280,7 @@
         </div>
     </div>
     <div class="input-group">
-        <label for="Your_Main_Career">Your main career:</label>
+        <label for="Your_Main_Career" style="color: #ffffff;">Your main career:</label>
         <input type="text" id="maincareerInput" placeholder="All careers you able to play" th:attr="data-value=${Your_Main_Career}" th:value="${Your_Main_Career}" name="mainCareer" onclick="togglemaincareerOptions()" readonly />
         <div id="maincareerOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Your_Main_Career}" disabled selected th:text="${Your_Main_Career}" style="color: #62d110;"> </div>
@@ -300,7 +307,7 @@
         </div>
     </div>
     <div class="input-group">
-        <label for="allCareers">All careers you able to play:</label>
+        <label for="allCareers" style="color: #ffffff;">All careers you able to play:</label>
         <input type="text" id="allcareersInput" placeholder="All careers you able to play" th:attr="data-value=${All_careers}" th:value="${All_careers}" name="allCareers" onclick="toggleallcareersOptions()"readonly  />
         <div id="allcareersOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${All_careers}" disabled selected th:text="${All_careers}" style="color: #62d110;"> </div>
@@ -327,7 +334,7 @@
         </div>
     </div>
     <div class="input-group">
-        <label for="difficulty">Difficulty you'd like to play on:</label>
+        <label for="difficulty" style="color: #ffffff;">Difficulty you'd like to play on:</label>
         <input type="text" id="difficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" th:value="${Difficulty}" name="difficulty" onclick="toggledifficultyOptions()"readonly  />
         <div id="difficultyOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Difficulty}" disabled selected th:text="${Difficulty}" style="color: #62d110;"> </div>
@@ -340,7 +347,7 @@
         </div>
     </div>
     <div class="input-group">
-        <label for="gameMode">Game mode you would like to play:</label>
+        <label for="gameMode" style="color: #ffffff;">Game mode you would like to play:</label>
         <input type="text" id="gameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" th:value="${Game_mode}" name="gameMode" onclick="togglegameModeOptions()"readonly  />
             <div id="gameModeOptions" class="option-list" style="display: none;">
             <div class="option" th:attr="data-value=${Game_mode}" disabled selected th:text="${Game_mode}" style="color: #62d110;"> </div>
@@ -352,7 +359,7 @@
             </div>
     </div>
         <div class="input-group">
-            <label for="days">Days you prefer to play:</label>
+            <label for="days" style="color: #ffffff;">Days you prefer to play:</label>
             <input type="text" id="playingDaysInput" th:attr="data-value=${Days}" th:value="${Days}" placeholder="Select days" name="playingDays" onclick="toggleDaysOptions()" readonly/>
             <div id="playingDaysOptions" class="option-list" style="display: none;">
                 <div class="option" th:attr="data-value=${Days}" disabled selected th:text="${Days}" style="color: #62d110;"> ${Days} </div>
@@ -367,7 +374,7 @@
             </div>
         </div>
         <div class="input-group">
-            <label for="playingHours">The time you prefer to play:</label>
+            <label for="playingHours" style="color: #ffffff;">The time you prefer to play:</label>
             <input type="text" id="playingHoursInput" th:attr="data-value=${time}" th:value="${time}" placeholder="Select time" name="playingHours" onclick="toggleHoursOptions()" readonly />
             <div id="playingHoursOptions" class="option-list" style="display: none;">
                 <div class="option" th:attr="data-value=${time}" disabled selected th:text="${time}" style="color: #62d110;"></div>
@@ -389,42 +396,42 @@
 
 
 
-                <div id="teamInfoContainer" class="team-info-container " >
-                    <h2 style="text-align: center;">Team Information</h2>
+            <div id="teamInfoContainer" class="team-info-container">
+                <h2 style="text-align: center;">Team Information</h2>
 
-                    <div class="input-group">
-                        <label for="teamName">Team Name:</label>
-                        <input type="text" id="teamName" name="teamName" th:value="${teamName}" required />
-                    </div>
-
-                    <div class="input-group">
-                        <label for="teamCountry">Country:</label>
-                        <input type="text" id="teamCountry" name="teamCountry" th:value="${teamCountry}" required />
-                    </div>
-
-                    <div class="input-group">
-                        <label for="teamDifficulty">Team Difficulty:</label>
-                        <input type="text" id="teamDifficulty" name="teamDifficulty" th:value="${teamDifficulty}" required />
-                    </div>
-
-                    <div class="input-group">
-                        <label for="teamGameMode">Game Mode:</label>
-                        <input type="text" id="teamGameMode" name="teamGameMode" th:value="${teamGameMode}" required />
-                    </div>
-
-                    <div class="input-group">
-                        <label for="teamPlayingTime">Playing Time:</label>
-                        <input type="text" id="teamPlayingTime" name="teamPlayingTime" th:value="${teamPlayingTime}" required />
-                    </div>
-
-                    <div class="input-group">
-                        <label for="teamPlayingDays">Playing Days:</label>
-                        <input type="text" id="teamPlayingDays" name="teamPlayingDays" th:value="${teamPlayingDays}" required />
-                    </div>
-
-                    <button class="nav-button3" id="deleteTeamButton" style="display:none;">Delete Team</button>
-
+                <div class="input-group">
+                    <label for="teamName">Team Name:</label>
+                    <input type="text" id="teamName" name="teamName" th:value="${teamName}" required readonly />
                 </div>
+
+                <div class="input-group">
+                    <label for="teamCountry">Country:</label>
+                    <input type="text" id="teamCountry" name="teamCountry" th:value="${teamCountry}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamDifficulty">Team Difficulty:</label>
+                    <input type="text" id="teamDifficulty" name="teamDifficulty" th:value="${teamDifficulty}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamGameMode">Game Mode:</label>
+                    <input type="text" id="teamGameMode" name="teamGameMode" th:value="${teamGameMode}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamPlayingTime">Playing Time:</label>
+                    <input type="text" id="teamPlayingTime" name="teamPlayingTime" th:value="${teamPlayingTime}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamPlayingDays">Playing Days:</label>
+                    <input type="text" id="teamPlayingDays" name="teamPlayingDays" th:value="${teamPlayingDays}" required readonly />
+                </div>
+
+                <button class="nav-button3" id="deleteTeamButton" style="display:none;">Delete Team</button>
+                <button class="nav-button4" id="quitteam" style="display:none;">Leave Team</button>
+            </div>
         </div>
     </div>
     <div class="button-container left">
@@ -673,7 +680,42 @@ async function fetchNotifications() {
     }
 }
 
+document.getElementById('profileForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Отменяем стандартное поведение формы
 
+    const formData = new FormData(this);
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+
+    // Сбрасываем предыдущие сообщения
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+    successMessage.textContent = '';
+    successMessage.style.display = 'none';
+
+    // AJAX-запрос
+    fetch('/submitForm1', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            successMessage.textContent = 'Данные успешно отправлены!';
+            successMessage.style.display = 'block';
+
+
+        } else {
+            errorMessage.textContent = data.errorMessage;
+            errorMessage.style.display = 'block'; // Показываем сообщение об ошибке
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        errorMessage.textContent = 'Произошла ошибка при отправке данных.';
+        errorMessage.style.display = 'block'; // Показываем сообщение об ошибке
+    });
+});
 
 // Обработчик события на кнопку
 document.getElementById('get-notifications-button').onclick = function(event) {
@@ -714,6 +756,66 @@ document.addEventListener('click', function(event) {
 
 
 
+
+function showAlert(message) {
+    return new Promise((resolve) => {
+        const alertBox = document.getElementById('custom-alert');
+        const alertMessage = document.getElementById('alert-message');
+
+        alertMessage.textContent = message;
+        alertBox.style.display = 'block';
+
+        // Слушаем нажатие кнопки для закрытия
+        document.getElementById('close-alert').onclick = () => {
+            closeAlert();
+            resolve(); // Уведомление закрыто, промис решен
+        };
+    });
+}
+
+// Функция для закрытия кастомного уведомления
+function closeAlert() {
+    const alertBox = document.getElementById('custom-alert');
+    alertBox.style.display = 'none';
+}
+
+
+function submitForm(event) {
+    event.preventDefault();
+
+    // Получаем форму
+    const form = document.getElementById('profileForm');
+
+    // Получаем данные формы
+    const formData = new FormData(form);
+
+    // Отправляем асинхронный запрос (AJAX)
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json()) // Преобразуем ответ в JSON
+    .then(data => {
+        // Скрываем сообщения об ошибке или успехе
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'none';
+
+        // Если есть ошибка, показываем сообщение об ошибке
+        if (!data.success) {
+            document.getElementById('errorMessage').textContent = data.errorMessage;
+            document.getElementById('errorMessage').style.display = 'block';
+        } else {
+            // Если успех, показываем сообщение об успехе
+            document.getElementById('successMessage').textContent = 'Profile updated successfully!';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'An error occurred, please try again later.';
+        document.getElementById('errorMessage').style.display = 'block';
+    });
+}
 
 let roomName = '';
 let isConnected = false;
@@ -779,24 +881,37 @@ function subscribeToUserChannel(userId) {
         stompClient.connect({}, function(frame) {
             console.log('Connected: ++++++++++++++++++++++++++++++++++++++' + frame);
 
-            // Подписка на канал для получения сообщений "update" и "delete"
+
             stompClient.subscribe("/main/" + userId, function(message) {
-                console.log('Received message on /main/ +++++++++++++++++++++++++++' + userId + ': ', message.body);
+                console.log('Received message on /main/' + userId + ': ', message.body);
+                console.log(message.body + "1111111111111111111");
 
                 if (message.body === 'update') {
-                    console.log('Update received, showing alert and reloading page...');
-                    alert('User has been added to the team!');
-                    location.reload();
-                } else if (message.body === 'delete') {
-                    console.log('Delete received, showing alert and reloading page...');
-                    alert("You've been removed from the team");
-                    location.reload();
-                } else {
-                    console.log('Received unexpected message: ', message.body);
-                }
+    console.log('Update received, showing alert and reloading page...');
+    showAlert("You've been added to the team!").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'delete') {
+    console.log('Delete received, showing alert and reloading page...');
+    showAlert("You've been removed from the team").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'teamdeletedd') {
+    console.log('Team deleted, showing alert and reloading page...');
+    showAlert('Team has been deleted or you have been excluded from it').then(() => {
+        location.reload();
+    });
+} else if (message.body === 'LEAVE') {
+    console.log('====================================================');
+    showAlert('A team member has left the team' + userId + ': ' + message.body).then(() => {
+        location.reload();
+    });
+} else {
+    console.log('Received unexpected message: ', message.body);
+}
             });
 
-            console.log('Subscribed toOOOOOOOOOOOOOOOOOOO /main/' + userId);
+            console.log('Subscribed to /main/' + userId);
         }, function(error) {
             console.error('Error during WebSocket connection:', error);
         });
@@ -816,7 +931,6 @@ window.onload = setupUserSubscription;
 
 
 
-
 function connect() {
     if (isConnected) {
         console.log('Already connected, skipping connection attempt.');
@@ -825,46 +939,50 @@ function connect() {
 
     console.log('Attempting to connect...');
 
-    // Получаем userId и затем подключаемся к WebSocket
     getUserId().then(userId => {
         if (!userId) {
             console.error('User ID not found');
             return;
         }
 
-        // Подключаемся к WebSocket
         const socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
 
-            // Подписка на канал с roomName
+            // Подписка на канал чата
             stompClient.subscribe("/main/" + roomName, onMessageReceived);
-            console.log('Subscribed to /main/' + roomName);
+            console.log('Subscribed to /main/------------------------------------' + roomName);
 
-            // Подписка на канал с userId
+            // Подписка на канал пользователя для получения сообщений
             stompClient.subscribe("/main/" + userId, function(message) {
                 console.log('Received message on /main/' + userId + ': ', message.body);
+console.log(message.body + " 2222222222222222222");
+             if (message.body === 'update') {
+    showAlert("You've been added to the team!").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'delete') {
+    showAlert("You've been removed from the team").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'teamdeletedd') {
+    showAlert('The team has been deleted').then(() => {
+        location.reload();
+    });
+} else if (message.body === 'LEAVE') {
+    showAlert('A team member has left the team').then(() => {
+        console.log("================================================");
+        location.reload();
+    });
+} else {
+    console.log('Received unexpected message: ', message.body);
+}
+ });
 
-                if (message.body === 'update') {
-                    alert('User has been added to the team!');
-                    location.reload();
-                } else if (message.body === 'delete') {
-                    alert("You've been removed from the team");
-                    location.reload();
-                } else {
-                    console.log('Received unexpected message: ', message.body);
-                }
-            });
             console.log('Subscribed to /main/' + userId);
 
-            // Отправка сообщения о подключении
-            stompClient.send("/app/chat.joined", {}, JSON.stringify({
-                sender: username,
-                type: 'JOIN'
-            }));
-
-            isConnected = true;
+            isConnected = true; // Устанавливаем флаг подключения
             console.log('WebSocket connection established.');
             connectingElement.classList.add('hidden');
         }, function(error) {
@@ -872,6 +990,7 @@ function connect() {
         });
     });
 }
+
 
 function sendMessage(event) {
     event.preventDefault();
@@ -893,33 +1012,61 @@ function sendMessage(event) {
     }
 }
 document.getElementById('deleteTeamButton').addEventListener('click', function(event) {
-    event.preventDefault();  // Prevent default button behavior (like form submission)
+    event.preventDefault();  // Предотвращаем стандартное поведение кнопки (например, отправку формы)
 
-    fetch('/mainpage/deleteTeam', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            [csrfHeader]: csrfToken // Ensure this is defined and holds the correct CSRF token
-        }
-    })
-    .then(response => {
-        if (response.redirected) {
-            // If response indicates a redirect, redirect to the new location
-            window.location.href = response.url;
-        } else if (response.ok) {
-            return response.text(); // Get the response text if no redirection
-        } else {
-            throw new Error('Ошибка при удалении команды');
-        }
-    })
-    .then(result => {
-        // Handle the result - if not redirected, show success message
-        alert('Команда успешно удалена');
-        fetchRequests(); // Refresh the members list if there's no redirect
-    })
-    .catch(error => {
-        console.error('Ошибка:', error);
-        alert('Произошла ошибка при удалении');
+    // Делаем запрос для получения списка всех участников команды
+    fetch('/mainpage/getallteammembersid')
+        .then(response => response.json()) // Преобразуем ответ в JSON
+        .then(ids => {
+            // Перебираем список ID участников и отправляем WebSocket сообщение с каждым ID
+            if (stompClient && stompClient.connected) {
+                ids.forEach(id => {
+                    stompClient.send("/app/teamdeleted", {}, id.toString()); // Отправляем сообщение с каждым ID через WebSocket
+                    console.log('Sent WebSocket message for participant ID:', id);
+                });
+            }
+
+            // Удаляем команду
+            return fetch('/mainpage/deleteTeam', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken // Убедитесь, что CSRF-токен правильный
+                }
+            });
+        })
+        .then(() => {
+
+            return showAlert('Команда успешно удалена');  // Возвращаем промис, чтобы дождаться закрытия alert
+        })
+        .then(() => {
+            console.log('Team deleted successfully after notifying participants.');
+
+            // Обновляем список участников
+            fetchRequests();
+
+            // Перезагружаем страницу
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+
+        });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const fetchRequestsBtn = document.getElementById('fetch-requests-btn');
+
+    fetchRequestsBtn.addEventListener('click', function() {
+        // Добавляем класс "clicked" для анимации вращения
+        fetchRequestsBtn.classList.add('clicked');
+
+        // Убираем класс "clicked" после завершения анимации
+        setTimeout(() => {
+            fetchRequestsBtn.classList.remove('clicked');
+        }, 600); // Тайминг совпадает с длительностью анимации 0.6s
     });
 });
 
@@ -963,6 +1110,7 @@ function onMessageReceived(payload) {
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('centered-event-message');
         var leaveText = document.createTextNode(' Left!');
+
         messageElement.appendChild(leaveText);
     } else {
         if (message.sender === username) {
@@ -1026,7 +1174,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     deleteTeamButton.style.display = 'none'; // Скрываем кнопку, если не владелец
                 }
-                updateMemberList(members);  // Обновляем список участников
+
+                // Изменяем отображение кнопки "Leave Team"
+                const quitTeamButton = document.getElementById('quitteam');
+                if (!isOwner) {
+                    quitTeamButton.style.display = 'inline-block'; // Показываем кнопку, если пользователь не владелец
+                } else {
+                    quitTeamButton.style.display = 'none'; // Скрываем кнопку, если пользователь является владельцем
+                }
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
@@ -1038,15 +1193,45 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-
 // Вызываем checkUserTeamStatus при загрузке страницы
 document.addEventListener("DOMContentLoaded", function() {
     checkUserTeamStatus();
 });
 
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Функция для обработки выхода из команды
+    function leaveTeam() {
+        fetch('/mainpage/leaveteam', {  // Отправляем DELETE-запрос на сервер для выхода из команды
+            method: 'DELETE',  // Указание метода запроса DELETE
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();  // Получаем ответ как текст
+        })
+        .then(data => {
+            if (data === "deleted") {
+                showAlert("You've left the team").then(() => {
+            // Перезагружаем страницу только после того, как пользователь закроет уведомление
+            location.reload();
+        });
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
 
-
+    // Находим кнопку и добавляем обработчик события
+    const quitTeamButton = document.getElementById('quitteam');
+    quitTeamButton.addEventListener('click', leaveTeam);
+});
 
 
 
@@ -1090,10 +1275,13 @@ document.getElementById('teamCreationForm').addEventListener('submit', function(
             successMessage.textContent = 'Данные успешно отправлены!';
             successMessage.style.display = 'block';
 
-            // Выводим alert и перезагружаем страницу
-            alert('The team has been successfully created!');
-            location.reload();
+        showAlert('Team has been successfully created! ')
+    .then(() => {
 
+
+        // Перезагружаем страницу только после того, как пользователь закроет уведомление
+        location.reload();
+    });
         } else {
             errorMessage.textContent = data.errorMessage;
             errorMessage.style.display = 'block';
@@ -1250,8 +1438,7 @@ function enableCountrySelect(button) {
 });
 
 
- console.log('CSRF Token14:', csrfToken);
-console.log('CSRF Header14:', csrfHeader);
+
 
 document.querySelectorAll('#gameModeOptions .option').forEach(option => {
     option.addEventListener('click', function() {
@@ -1677,10 +1864,7 @@ document.querySelectorAll('#TeamsCountryOptions .option').forEach(option => {
     });
 });
 
-    function saveProfile() {
-        alert('Профиль сохранен!');
-        hideProfile(); // Закрыть контейнер после сохранения
-    }
+
 
    function showChat() {
         document.getElementById('chatContainer').style.display = 'block'; // Показываем чат
@@ -1851,9 +2035,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         .then(data => {
                             console.log('Success:', data);
 
-                            // Если пользователь уже является членом команды, показываем alert
+
                             if (data.message === "User is already a member" && data.success === false) {
-                                alert('You are already a member of a team');
+                                showAlert('You are already a member of a team');
                                 return; // Если пользователь уже член, кнопка не меняется
                             }
 
@@ -1897,20 +2081,37 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-
 function getAvatarColor(name) {
-    if (!memberColors.has(name)) {
-        // Если цвета еще нет, пробуем получить его из localStorage
-        const storedColor = localStorage.getItem(name);
-        if (storedColor) {
-            memberColors.set(name, storedColor); // Загружаем сохраненный цвет
-        } else {
-            const newColor = getRandomColor();
-            memberColors.set(name, newColor); // Генерация нового цвета
-            localStorage.setItem(name, newColor); // Сохранение цвета в localStorage
-        }
+    // Функция хэширования для генерации числового значения из имени
+    function hashCode(str) {
+        return Array.from(str).reduce((hash, char) => hash * 31 + char.charCodeAt(0), 0);
     }
-    return memberColors.get(name);
+
+    // Генерация цвета из хэша с корректировкой яркости
+    function generateColorFromHash(hash) {
+        let r = (hash & 0xFF0000) >> 16; // Красный
+        let g = (hash & 0x00FF00) >> 8;  // Зеленый
+        let b = hash & 0x0000FF;         // Синий
+
+        // Уменьшаем светлость, если цвет слишком яркий
+        const brightnessFactor = 0.8; // Коэффициент уменьшения яркости
+        r = Math.floor(r * brightnessFactor);
+        g = Math.floor(g * brightnessFactor);
+        b = Math.floor(b * brightnessFactor);
+
+        // Устанавливаем нижний предел для предотвращения слишком темных цветов
+        const minBrightness = 70; // Минимальная яркость
+        r = Math.max(r, minBrightness);
+        g = Math.max(g, minBrightness);
+        b = Math.max(b, minBrightness);
+
+        // Формируем цвет в формате rgb()
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // Генерируем хэш на основе имени
+    const hash = Math.abs(hashCode(name)); // Делаем хэш положительным
+    return generateColorFromHash(hash);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -2012,10 +2213,46 @@ function fetchRequests() {
         });
 }
 
+// Функция для отклонения пользователя
+function rejectUser(userName) {
+    console.log('Preparing to reject user');
+
+    // Отправляем запрос на сервер для отклонения пользователя
+    fetch(`/mainpage/deleterequest?userName=${userName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken // Пример использования CSRF-токена
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reject user'); // Бросаем ошибку, если сервер вернул ошибку
+        }
+        return response.text(); // Ответ от сервера - строка (например, "deleted")
+    })
+    .then(data => {
+        if (data === "deleted") {
+            console.log('User rejected successfully!');
+            fetchRequests(); // Обновляем список запросов
+            showAlert('User has been rejected!');
+        } else {
+            throw new Error('Unexpected server response');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+
+    });
+}
+
 const fetchRequestsButton = document.getElementById('fetch-requests-btn');
 fetchRequestsButton.addEventListener('click', function() {
     fetchRequests(); // Вызываем функцию при нажатии на иконку
 });
+
+
+
 
 
 function addMemberToTeam(userName) {
@@ -2044,15 +2281,22 @@ function addMemberToTeam(userName) {
 
         // После успешного добавления отправляем уведомление через WebSocket
         if (stompClient && stompClient.connected) {
-            // Просто вызываем метод "/app/accepted" без данных
+            // Отправляем сообщение о подключении
+            stompClient.send("/app/chat.joined", {}, JSON.stringify({
+                sender: userName,
+                type: 'JOIN'
+            }));
+            console.log('JOIN message sent.');
+
+            // Также отправляем уведомление о принятии
             stompClient.send("/app/accepted", {}, userName); // Передаем только userName
         }
 
-        alert('Member added to team!');
+        showAlert('Member added to team!');
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('There was an error adding the member.');
+
     });
 }
 
@@ -2092,8 +2336,8 @@ function getRandomColor() {
 
         brightness = getBrightness(r, g, b);
 
-        // Проверка, что цвет не слишком светлый (яркость < 200) и не белый
-    } while (brightness > 200 || (r === 255 && g === 255 && b === 255));
+        // Условие: цвет не должен быть слишком светлым (> 200) или слишком темным (< 50)
+    } while (brightness > 200 || brightness < 50);
 
     // Формируем шестнадцатеричный цвет
     color += (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
@@ -2188,58 +2432,94 @@ function updateMemberList(members) {
 }
 
 
+function deleteUser(userName) {
+    console.log('Preparing to delete user');
 
-function removeMember(userId) {
-    fetch(`/deleteteammember/${userId}`, {
-        method: 'DELETE',
+    // Отправляем запрос на сервер для удаления пользователя
+    fetch(`/mainpage/deleterequest?userName=${userName}`, { // Передаем userName в запросе
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            [csrfHeader]: csrfToken  // Убедитесь, что CSRF-токен верный
-        }
+            [csrfHeader]: csrfToken // Пример использования CSRF-токена
+        },
     })
     .then(response => {
-        if (response.ok) {
-            alert('Member was successfully deleted');
-            return fetch('/mainpage/teammembers');  // Делаем запрос для обновления списка участников
-        } else {
-            throw new Error('Ошибка при удалении пользователя');
+        if (!response.ok) {
+            throw new Error('Failed to delete user'); // Бросаем ошибку, если сервер вернул ошибку
         }
-    })
-    .then(updatedResponse => {
-        if (updatedResponse.ok) {
-            return updatedResponse.json();
-        } else {
-            throw new Error('Ошибка при получении обновленного списка участников');
-        }
+        return response.text(); // Ответ от сервера - строка (например, "deleted")
     })
     .then(data => {
-        console.log("Обновленный список участников:", data.members);
-        updateMemberList(data.members);  // Обновляем список участников
-
-        // Отправка уведомления через WebSocket после успешного обновления
-        if (stompClient && stompClient.connected) {
-            stompClient.send("/app/deleted", {}, userId.toString()); // Передаем userId в виде строки
+        if (data === "deleted") {
+            console.log('User deleted successfully!');
+            fetchRequests(); // Обновляем список запросов
+            showAlert('User has been deleted!');
+        } else {
+            throw new Error('Unexpected server response');
         }
     })
     .catch(error => {
-        console.error('Ошибка:', error);
-        alert('Произошла ошибка при обновлении списка участников');
+        console.error('Error:', error);
+
     });
 }
 
+function removeMember(userId) {
+    // Получаем имя пользователя с сервера
+    fetch(`/getmembername/${userId}`)
+        .then(response => response.text())  // Получаем имя пользователя
+        .then(userName => {
+            // Удаляем пользователя
+            return fetch(`/deleteteammember/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken  // Убедитесь, что CSRF-токен верный
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('Member was successfully deleted');
+                    return fetch('/mainpage/teammembers');  // Делаем запрос для обновления списка участников
+                }
+            })
+            .then(updatedResponse => updatedResponse.json())  // Получаем обновленный список участников
+            .then(data => {
+                console.log("Обновленный список участников:", data.members);
+                updateMemberList(data.members);  // Обновляем список участников
+
+                // Проверяем соединение
+                if (stompClient && stompClient.connected) {
+                    // Создаем сообщение для отправки
+                    const chatMessage = {
+                        sender: userName,  // Используем имя пользователя
+                        type: 'LEAVE'  // Тип сообщения — "LEAVE"
+                    };
+
+                    stompClient.send("/app/teamdeleted", {}, userId.toString());
+                    console.log('Team deleted message sent with userId: ', userId);
+
+                    // Отправляем сообщение через WebSocket на /app/LEAVE
+                    stompClient.send("/app/LEAVE", {}, JSON.stringify(chatMessage));
+                    console.log('LEFT message sent.');
 
 
+                }
+            });
+        });
+}
 
-    function showChat() {
-        document.getElementById('chatContent').style.display = 'block'; // Показываем чат
-        document.getElementById('objectListContent').style.display = 'none'; // Скрываем список объектов
-    }
+function showChat() {
+    document.getElementById('chatContent').style.display = 'block'; // Показываем чат
+    document.getElementById('objectListContent').style.display = 'none'; // Скрываем список объектов
+}
 
-    function showObjectList() {
-        document.getElementById('objectListContent').style.display = 'block'; // Показываем список объектов
-        document.getElementById('chatContent').style.display = 'none'; // Скрываем чат
-    }
+function showObjectList() {
+    document.getElementById('objectListContent').style.display = 'block'; // Показываем список объектов
+    document.getElementById('chatContent').style.display = 'none'; // Скрываем чат
+}
 
+// Обработчик отправки сообщений
 document.addEventListener('DOMContentLoaded', (event) => {
     messageForm.addEventListener('submit', sendMessage);
 });
