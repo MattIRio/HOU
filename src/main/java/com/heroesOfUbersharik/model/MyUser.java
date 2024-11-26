@@ -39,7 +39,7 @@ public class MyUser {
     @Column(name = "gameMode", nullable = true)
     String gameMode;
 
-    @Column(name = "chatRoomId")
+    @Column(name = "chatRoomId", nullable = true)
     Integer chatRoomId;
 
     public MyUser(String name, String country, String englishLvl, String mainCareer, String allCareers, String playingHours, String playingDays, String difficulty, String gameMode) {
