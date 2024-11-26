@@ -1,0 +1,313 @@
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login Page</title>
+        <link rel="stylesheet" href="/css/profile_form.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </head>
+    <body>
+    <div id="login-page">
+        <div class="login">
+            <div class="text-container">
+                <div class="header-text">Thank you for registering</div>
+                <p class="header-text">Please fill out the information for your profile</p>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <form class="form-login" method="POST" th:action="@{/profileform}">
+                <!-- Шаг 1 -->
+                <div id="step1">
+                    <div th:if="${FormOmited}" class="alert alert-success">
+                        <p th:text="${FormOmited}" style="color: #f74d4d;"></p>
+                    </div>
+                    <label for="name">Display name</label>
+                    <div class="input-email">
+                        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <label for="country">Your Country</label>
+                    <select id="country" name="country" required>
+                        <option value="">Choose your country</option>
+
+                    </select>
+
+                    <label for="englishLvl">Can you communicate in English?</label>
+                    <select id="englishLvl" name="englishLvl" required>
+                        <option value="">Choose an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="So-so">So-so</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <div class="button-container">
+                        <span type="button" id="next-button" class="btn"><i class="fas fa-arrow-right"></i> Next </span>
+                    </div>
+                </div>
+
+                <div id="step2" class="hidden">
+                    <div th:if="${FormOmited}" class="alert alert-success">
+                        <p th:text="${FormOmited}" style="color: #f74d4d;"></p>
+                    </div>
+                    <label for="mainCareer">Your Main Career</label>
+                    <select id="mainCareer" name="mainCareer" required>
+                        <option value="">Choose your option</option>
+                        <option value="Mercenary">Mercenary</option>
+                        <option value="Ranger Veteran">Ranger Veteran</option>
+                        <option value="Waystalker">Waystalker</option>
+                        <option value="Witch Hunter Captain">Witch Hunter Captain</option>
+                        <option value="Battle Wizard">Battle Wizard</option>
+                        <option value="Huntsman">Huntsman</option>
+                        <option value="Ironbreaker">Ironbreaker</option>
+                        <option value="Handmaiden">Handmaiden</option>
+                        <option value="Bounty Hunter">Bounty Hunter</option>
+                        <option value="Pyromancer">Pyromancer</option>
+                        <option value="Foot Knight">Foot Knight</option>
+                        <option value="Slayer">Slayer</option>
+                        <option value="Shade">Shade</option>
+                        <option value="Zealot">Zealot</option>
+                        <option value="Unchained">Unchained</option>
+                        <option value="Grail Knight">Grail Knight</option>
+                        <option value="Outcast Engineer">Outcast Engineer</option>
+                        <option value="Sister of the Thorn">Sister of the Thorn</option>
+                        <option value="Warrior Priest of Sigmar">Warrior Priest of Sigmar</option>
+                        <option value="Necromancer">Necromancer</option>
+                    </select>
+
+
+                    <label for="allCareers">All careers you able to play</label>
+                    <div class="dropdown">
+                        <span class="dropbtn" onclick="toggleDropdown(event)">Choose your options</span>
+                        <div class="dropdown-content" >
+                            <label><input type="checkbox" name="allCareers" value="Mercenary"> Mercenary</label>
+                            <label><input type="checkbox" name="allCareers" value="Ranger Veteran"> Ranger Veteran</label>
+                            <label><input type="checkbox" name="allCareers" value="Waystalker"> Waystalker</label>
+                            <label><input type="checkbox" name="allCareers" value="Witch Hunter Captain"> Witch Hunter Captain</label>
+                            <label><input type="checkbox" name="allCareers" value="Battle Wizard"> Battle Wizard</label>
+                            <label><input type="checkbox" name="allCareers" value="Huntsman"> Huntsman</label>
+                            <label><input type="checkbox" name="allCareers" value="Ironbreaker"> Ironbreaker</label>
+                            <label><input type="checkbox" name="allCareers" value="Handmaiden"> Handmaiden</label>
+                            <label><input type="checkbox" name="allCareers" value="Bounty Hunter"> Bounty Hunter</label>
+                            <label><input type="checkbox" name="allCareers" value="Pyromancer"> Pyromancer</label>
+                            <label><input type="checkbox" name="allCareers" value="Foot Knight"> Foot Knight</label>
+                            <label><input type="checkbox" name="allCareers" value="Slayer"> Slayer</label>
+                            <label><input type="checkbox" name="allCareers" value="Shade"> Shade</label>
+                            <label><input type="checkbox" name="allCareers" value="Zealot"> Zealot</label>
+                            <label><input type="checkbox" name="allCareers" value="Unchained"> Unchained</label>
+                            <label><input type="checkbox" name="allCareers" value="Grail Knight"> Grail Knight</label>
+                            <label><input type="checkbox" name="allCareers" value="Outcast Engineer"> Outcast Engineer</label>
+                            <label><input type="checkbox" name="allCareers" value="Sister of the Thorn"> Sister of the Thorn</label>
+                            <label><input type="checkbox" name="allCareers" value="Warrior Priest of Sigmar"> Warrior Priest of Sigmar</label>
+                            <label><input type="checkbox" name="allCareers" value="Necromancer"> Necromancer</label>
+                        </div>
+                    </div>
+
+                    <label for="difficulty">Difficulty you'd like to play on</label>
+                    <div class="dropdown">
+                        <span class="dropbtn">Choose your options</span>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="difficulty" value="Any"> Any</label>
+                            <label><input type="checkbox" name="difficulty" value="Recruit"> Recruit</label>
+                            <label><input type="checkbox" name="difficulty" value="Veteran"> Veteran</label>
+                            <label><input type="checkbox" name="difficulty" value="Champion"> Champion</label>
+                            <label><input type="checkbox" name="difficulty" value="Legend"> Legend</label>
+                            <label><input type="checkbox" name="difficulty" value="Cataclysm"> Cataclysm</label>
+                            <label><input type="checkbox" name="difficulty" value="Cataclysm+"> Cataclysm+</label>
+                        </div>
+                    </div>
+
+                    <label for="game_Mode">Game mode you would like to play</label>
+                    <div class="dropdown">
+                        <span class="dropbtn">Choose your options</span>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="gameMode" value="Any"> Any</label>
+                            <label><input type="checkbox" name="gameMode" value="Chaos Wastes"> Chaos Wastes</label>
+                            <label><input type="checkbox" name="gameMode" value="Campaign"> Campaign</label>
+                            <label><input type="checkbox" name="gameMode" value="Deeds"> Deeds</label>
+                            <label><input type="checkbox" name="gameMode" value="Winds of Magic"> Winds of Magic</label>
+                        </div>
+                    </div>
+
+                    <div class="button-container">
+                        <button type="button" id="back-button" class="btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="button" id="next-button1" class="btn"><i class="fas fa-arrow-right"></i> Next </button>
+                    </div>
+                </div>
+
+                <div id="step3" class="hidden">
+                    <div th:if="${FormOmited}" class="alert alert-success">
+                        <p th:text="${FormOmited}" style="color: #f74d4d;"></p>
+                    </div>
+                    <label for="playing_Days">Days you prefer to play</label>
+                    <div class="dropdown">
+                        <span class="dropbtn">Choose your options</span>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="playingDays" value="Any"> Any</label>
+                            <label><input type="checkbox" name="playingDays" value="Sunday"> Sunday</label>
+                            <label><input type="checkbox" name="playingDays" value="Monday"> Monday</label>
+                            <label><input type="checkbox" name="playingDays" value="Tuesday"> Tuesday</label>
+                            <label><input type="checkbox" name="playingDays" value="Wednesday"> Wednesday</label>
+                            <label><input type="checkbox" name="playingDays" value="Thursday"> Thursday</label>
+                            <label><input type="checkbox" name="playingDays" value="Friday"> Friday</label>
+                            <label><input type="checkbox" name="playingDays" value="Saturday"> Saturday</label>
+                        </div>
+                    </div>
+
+                    <label for="playingHours">The time you prefer to play</label>
+                    <div class="dropdown">
+                        <span class="dropbtn">Choose your options</span>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="playingHours" value="Any"> Any</label>
+                            <label><input type="checkbox" name="playingHours" value="Weekdays All Day"> Weekdays All Day</label>
+                            <label><input type="checkbox" name="playingHours" value="Weekdays Evening"> Weekdays Evening</label>
+                            <label><input type="checkbox" name="playingHours" value="Weekends All Day"> Weekends All Day</label>
+                            <label><input type="checkbox" name="playingHours" value="Weekends Evening"> Weekends Evening</label>
+                        </div>
+                    </div>
+
+                    <div class="button-container">
+                        <button type="button" id="back-button1" class="btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="submit" id="submit-button" class="btn"><i class="fas fa-check"></i> Done </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="background">
+            <img src="/images/regPage.png" alt="Background Image">
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const countries = [
+                { code: "Afghanistan", name: "Afghanistan" },
+                { code: "Albania", name: "Albania" },
+                { code: "Argentina", name: "Argentina" },
+                { code: "Armenia", name: "Armenia" },
+                { code: "Australia", name: "Australia" },
+                { code: "Austria", name: "Austria" },
+                { code: "Azerbaijan", name: "Azerbaijan" },
+                { code: "Belgium", name: "Belgium" },
+                { code: "Bulgaria", name: "Bulgaria" },
+                { code: "Brazil", name: "Brazil" },
+                { code: "Canada", name: "Canada" },
+                { code: "Switzerland", name: "Switzerland" },
+                { code: "Chile", name: "Chile" },
+                { code: "China", name: "China" },
+                { code: "Colombia", name: "Colombia" },
+                { code: "Costa Rica", name: "Costa Rica" },
+                { code: "Germany", name: "Germany" },
+                { code: "Denmark", name: "Denmark" },
+                { code: "Ecuador", name: "Ecuador" },
+                { code: "Estonia", name: "Estonia" },
+                { code: "Spain", name: "Spain" },
+                { code: "Finland", name: "Finland" },
+                { code: "France", name: "France" },
+                { code: "United Kingdom", name: "United Kingdom" },
+                { code: "Georgia", name: "Georgia" },
+                { code: "Greece", name: "Greece" },
+                { code: "Guatemala", name: "Guatemala" },
+                { code: "Hong Kong", name: "Hong Kong" },
+                { code: "Croatia", name: "Croatia" },
+                { code: "Hungary", name: "Hungary" },
+                { code: "Indonesia", name: "Indonesia" },
+                { code: "Ireland", name: "Ireland" },
+                { code: "Israel", name: "Israel" },
+                { code: "India", name: "India" },
+                { code: "Italy", name: "Italy" },
+                { code: "Japan", name: "Japan" },
+                { code: "South Korea", name: "South Korea" },
+                { code: "Mexico", name: "Mexico" },
+                { code: "Netherlands", name: "Netherlands" },
+                { code: "Norway", name: "Norway" },
+                { code: "New Zealand", name: "New Zealand" },
+                { code: "Peru", name: "Peru" },
+                { code: "Philippines", name: "Philippines" },
+                { code: "Poland", name: "Poland" },
+                { code: "Portugal", name: "Portugal" },
+                { code: "Romania", name: "Romania" },
+                { code: "Sweden", name: "Sweden" },
+                { code: "Singapore", name: "Singapore" },
+                { code: "Thailand", name: "Thailand" },
+                { code: "Turkey", name: "Turkey" },
+                { code: "Ukraine", name: "Ukraine" },
+                { code: "United States", name: "United States" },
+                { code: "Vietnam", name: "Vietnam" },
+                { code: "South Africa", name: "South Africa" },
+            ];
+
+
+            function toggleDropdown(event) {
+        const dropdownContent = event.currentTarget.nextElementSibling;
+        const isVisible = dropdownContent.classList.contains("show");
+
+
+        const dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(dropdown => dropdown.classList.remove("show"));
+
+
+        if (!isVisible) {
+            dropdownContent.classList.toggle("show");
+        }
+    }
+
+
+    const dropbtns = document.querySelectorAll('.dropbtn');
+    dropbtns.forEach(btn => {
+        btn.addEventListener('click', toggleDropdown);
+    });
+
+
+    const dropdownItems = document.querySelectorAll('.dropdown-content label');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            const dropdowns = document.querySelectorAll('.dropdown-content');
+            dropdowns.forEach(dropdown => {
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+    };
+
+
+    const selectElement = document.getElementById("country");
+    countries.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.code;
+        option.textContent = country.name;
+        selectElement.appendChild(option);
+    });
+
+
+    document.getElementById("next-button").addEventListener("click", function () {
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("step2").classList.remove("hidden");
+    });
+
+    document.getElementById("back-button").addEventListener("click", function () {
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step1").classList.remove("hidden");
+    });
+
+    document.getElementById("next-button1").addEventListener("click", function () {
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step3").classList.remove("hidden");
+    });
+
+    document.getElementById("back-button1").addEventListener("click", function () {
+        document.getElementById("step3").classList.add("hidden");
+        document.getElementById("step2").classList.remove("hidden");
+    });
+});
+    </script>
+    </body>
+    </html>
+
+
+

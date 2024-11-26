@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/css/registerPageStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div id="login-page">
+    <div class="login">
+        <div class="text-container">
+            <div class="header-text">Welcome to Our Registration Page</div>
+            <p class="header-text">Please do not enter passwords that you have previously used elsewhere or any sensitive information in the fields</p>
+            <p class="header-text">There is no email verification, you can use any email you want, just remember the name</p>
+        </div>
+
+        <h2 class="login-title">Register</h2>
+        <form method="post" th:action="@{/register}" th:object="${registerRequest}">
+            <div th:if="${EmailExist}" class="alert alert-fail">
+                <p th:text="${EmailExist}" style="color: #ee2751;"></p>
+            </div>
+            <p class="notice">Please register to access the site</p>
+            <label for="email">E-mail</label>
+            <div class="input-email">
+                <i class="fas fa-envelope icon"></i>
+                <input type="email" id="email" name="email" placeholder="Enter your e-mail" required>
+            </div>
+
+            <label for="password">Password</label>
+            <div class="input-password">
+                <i class="fas fa-lock icon"></i>
+                <input type="password" id="password" name="password" placeholder="Enter your password"pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required> <!-- Добавьте id -->
+            </div>
+
+            <button type="submit"><i class="fas fa-door-open"></i> Sign in</button>
+            <p class="redirect-text"> <a href="/loginpage">Login page</a>.</p>
+        </form>
+    </div>
+    <div class="background">
+        <img src="/images/regPage.png" alt="Background Image">
+
+    </div>
+</div>
+</body>
+</html>

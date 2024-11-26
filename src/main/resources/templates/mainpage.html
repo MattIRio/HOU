@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:color="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+
+    <link rel="stylesheet" href="/css/mainpage.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var currentUser = /*[[${username}]]*/ '';
+    </script>
+
+</head>
+<input type="hidden" id="username" th:value="${session.username}">
+<body onload="showChat()">
+<div id="custom-alert" class="custom-alert" style="display:none;">
+    <div class="alert-content">
+        <span id="alert-message"></span>
+        <button id="close-alert" onclick="closeAlert()">Ok</button>
+    </div>
+</div>
+<div class="navbar">
+    <img src="/images/logo.png" alt="Description" class="navbar-image" />
+    <div class="navbar-title">
+        <h1>Welcome to HOU! Browse the existing teams or create your own</h1>
+    </div>
+    <div class="navbar-buttons">
+
+
+
+        <button class="nav-button" onclick="toggleProfile()">Profile</button>
+        <button class="nav-button create-group" onclick="toggleTeamCreator()">Create a team</button>
+
+        <form id="logoutForm" th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button class="nav-button" type="submit">Logout</button>
+        </form>
+
+        <button class="nav-button create-group" id="get-notifications-button" onclick="toggleNewForm()">&#128276;</button>
+    </div>
+</div>
+
+<div id="new-form-container" class="profile-container" style="display: none;">
+    <form>
+        <div id="notifications-container"></div>
+    </form>
+</div>
+
+
+
+<form id="teamCreationForm" action="/submitForm2" method="post" onsubmit="submitForm(event)">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <div id="teamCreationContainer" class="profile-container">
+        <h2 style="color: #ffffff;">Team Creation Form</h2>
+
+        <div id="error-message" style="display:none; color: red;"></div>
+        <div id="success-message" style="display:none; color: green;"></div>
+
+        <div class="input-group input-group-team">
+            <input type="text" id="teamName" placeholder="teamName" name="teamName" />
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsCountry" style="color: #ffffff;">Team's Country:</label>
+            <input type="text" id="TeamsCountryInput" placeholder="Select a country" th:attr="data-value=${Country}" value="Choose your option" name="teamsCountry" onclick="toggleTeamsCountryOptions()"readonly  />
+            <div id="TeamsCountryOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${Country}" disabled selected th:text="${Country}" style="color: #62d110;"> </div>
+                <div class="option" data-value="No Country">No Country</div>
+                <div class="option" data-value="Afghanistan">Afghanistan</div>
+                <div class="option" data-value="Albania">Albania</div>
+                <div class="option" data-value="Argentina">Argentina</div>
+                <div class="option" data-value="Armenia">Armenia</div>
+                <div class="option" data-value="Australia">Australia</div>git add .
+                <div class="option" data-value="Austria">Austria</div>
+                <div class="option" data-value="Azerbaijan">Azerbaijan</div>
+                <div class="option" data-value="Belgium">Belgium</div>
+                <div class="option" data-value="Bulgaria">Bulgaria</div>
+                <div class="option" data-value="Brazil">Brazil</div>
+                <div class="option" data-value="Canada">Canada</div>
+                <div class="option" data-value="Switzerland">Switzerland</div>
+                <div class="option" data-value="Chile">Chile</div>
+                <div class="option" data-value="China">China</div>
+                <div class="option" data-value="Colombia">Colombia</div>
+                <div class="option" data-value="Costa Rica">Costa Rica</div>
+                <div class="option" data-value="Germany">Germany</div>
+                <div class="option" data-value="Denmark">Denmark</div>
+                <div class="option" data-value="Ecuador">Ecuador</div>
+                <div class="option" data-value="Estonia">Estonia</div>
+                <div class="option" data-value="Spain">Spain</div>
+                <div class="option" data-value="Finland">Finland</div>
+                <div class="option" data-value="France">France</div>
+                <div class="option" data-value="United Kingdom">United Kingdom</div>
+                <div class="option" data-value="Georgia">Georgia</div>
+                <div class="option" data-value="Greece">Greece</div>
+                <div class="option" data-value="Guatemala">Guatemala</div>
+                <div class="option" data-value="Hong Kong">Hong Kong</div>
+                <div class="option" data-value="Croatia">Croatia</div>
+                <div class="option" data-value="Hungary">Hungary</div>
+                <div class="option" data-value="Indonesia">Indonesia</div>
+                <div class="option" data-value="Ireland">Ireland</div>
+                <div class="option" data-value="Israel">Israel</div>
+                <div class="option" data-value="India">India</div>
+                <div class="option" data-value="Italy">Italy</div>
+                <div class="option" data-value="Japan">Japan</div>
+                <div class="option" data-value="South Korea">South Korea</div>
+                <div class="option" data-value="Mexico">Mexico</div>
+                <div class="option" data-value="Netherlands">Netherlands</div>
+                <div class="option" data-value="Norway">Norway</div>
+                <div class="option" data-value="New Zealand">New Zealand</div>
+                <div class="option" data-value="Peru">Peru</div>
+                <div class="option" data-value="Philippines">Philippines</div>
+                <div class="option" data-value="Poland">Poland</div>
+                <div class="option" data-value="Portugal">Portugal</div>
+                <div class="option" data-value="Romania">Romania</div>
+                <div class="option" data-value="Sweden">Sweden</div>
+                <div class="option" data-value="Singapore">Singapore</div>
+                <div class="option" data-value="Thailand">Thailand</div>
+                <div class="option" data-value="Turkey">Turkey</div>
+                <div class="option" data-value="Ukraine">Ukraine</div>
+                <div class="option" data-value="United States">United States</div>
+                <div class="option" data-value="Vietnam">Vietnam</div>
+                <div class="option" data-value="South Africa">South Africa</div>
+            </div>
+        </div>
+
+
+        <div class="input-group">
+            <label for="TeamsDifficulty" style="color: #ffffff;">The difficulty your team would like to play on:</label>
+            <input type="text" id="TeamsDifficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" value="Choose your option" name="teamsDifficulty" onclick="toggleTeamsDifficultyOptions()" readonly />
+            <div id="TeamsDifficultyOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Recruit">Recruit</div>
+                <div class="option" data-value="Veteran">Veteran</div>
+                <div class="option" data-value="Champion">Champion</div>
+                <div class="option" data-value="Cataclysm">Cataclysm</div>
+                <div class="option" data-value="Cataclysm+">Cataclysm+</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsGameMode" style="color: #ffffff;">Game mode your team would like to play:</label>
+            <input type="text" id="TeamsGameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" value="Choose your option" name="TeamsGameMode" onclick="toggleTeamsGameModeOptions()"readonly  />
+            <div id="TeamsGameModeOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Chaos Waste">Chaos Waste</div>
+                <div class="option" data-value="Campaign">Campaign</div>
+                <div class="option" data-value="Deeds">Deeds</div>
+                <div class="option" data-value="Winds of Magic">Winds of Magic</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamsPlayingDays" style="color: #ffffff;">Days your team prefer to play:</label>
+            <input type="text" id="TeamsPlayingDaysInput" th:attr="data-value=${Days}" value="Choose your option" placeholder="Select days" name="teamsPlayingDays" onclick="toggleTeamsPlayingDays()"readonly  />
+            <div id="TeamsPlayingDaysOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Sunday">Sunday</div>
+                <div class="option" data-value="Monday">Monday</div>
+                <div class="option" data-value="Tuesday">Tuesday</div>
+                <div class="option" data-value="Wednesday">Wednesday</div>
+                <div class="option" data-value="Thursday">Thursday</div>
+                <div class="option" data-value="Friday">Friday</div>
+                <div class="option" data-value="Saturday">Saturday</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="TeamplayingHours" style="color: #ffffff;">The time your team prefer to play:</label>
+            <input type="text" id="TeamplayingHoursInput" th:attr="data-value=${TeamPlayingHours}" value="Choose your option" placeholder="Select time" name="teamsPlayingTime" onclick="toggleTeamHoursOptions()"readonly  />
+            <div id="TeamplayingHoursOptions" class="option-list" style="display: none;">
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Weekdays All Day">Weekdays All Day</div>
+                <div class="option" data-value="Weekdays Evening">Weekdays Evening</div>
+                <div class="option" data-value="Weekends All Day">Weekends All Day</div>
+                <div class="option" data-value="Weekends Evening">Weekends Evening</div>
+            </div>
+        </div>
+
+
+        <button type="submit" id="submit-button1" class="nav-button1">Save</button>
+    </div>
+</form>
+
+
+
+
+<form id="profileForm" action="/submitForm1" method="POST">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div id="profileContainer" class="profile-container">
+        <h2>Profile Information</h2>
+
+        <div id="errorMessage" style="display: none; color: red;"></div>
+        <div id="successMessage" style="display: none; color: green;"></div>
+
+    <div class="input-group">
+        <label for="Name" style="color: #ffffff;">Name:</label>
+        <input type="text" id="NameInput" th:value="${Name}" name="name" />
+    </div>
+
+
+
+
+
+
+    <div class="input-group">
+        <label for="Country" style="color: #ffffff;">Country:</label>
+        <input type="text" id="countryInput" placeholder="Select a country" th:attr="data-value=${Country}" th:value="${Country}" name="country" onclick="togglecountryOptions()"readonly  />
+        <div id="countryOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${Country}" disabled selected th:text="${Country}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Afghanistan">Afghanistan</div>
+            <div class="option" data-value="Albania">Albania</div>
+            <div class="option" data-value="Argentina">Argentina</div>
+            <div class="option" data-value="Armenia">Armenia</div>
+            <div class="option" data-value="Australia">Australia</div>
+            <div class="option" data-value="Austria">Austria</div>
+            <div class="option" data-value="Azerbaijan">Azerbaijan</div>
+            <div class="option" data-value="Belgium">Belgium</div>
+            <div class="option" data-value="Bulgaria">Bulgaria</div>
+            <div class="option" data-value="Brazil">Brazil</div>
+            <div class="option" data-value="Canada">Canada</div>
+            <div class="option" data-value="Switzerland">Switzerland</div>
+            <div class="option" data-value="Chile">Chile</div>
+            <div class="option" data-value="China">China</div>
+            <div class="option" data-value="Colombia">Colombia</div>
+            <div class="option" data-value="Costa Rica">Costa Rica</div>
+            <div class="option" data-value="Germany">Germany</div>
+            <div class="option" data-value="Denmark">Denmark</div>
+            <div class="option" data-value="Ecuador">Ecuador</div>
+            <div class="option" data-value="Estonia">Estonia</div>
+            <div class="option" data-value="Spain">Spain</div>
+            <div class="option" data-value="Finland">Finland</div>
+            <div class="option" data-value="France">France</div>
+            <div class="option" data-value="United Kingdom">United Kingdom</div>
+            <div class="option" data-value="Georgia">Georgia</div>
+            <div class="option" data-value="Greece">Greece</div>
+            <div class="option" data-value="Guatemala">Guatemala</div>
+            <div class="option" data-value="Hong Kong">Hong Kong</div>
+            <div class="option" data-value="Croatia">Croatia</div>
+            <div class="option" data-value="Hungary">Hungary</div>
+            <div class="option" data-value="Indonesia">Indonesia</div>
+            <div class="option" data-value="Ireland">Ireland</div>
+            <div class="option" data-value="Israel">Israel</div>
+            <div class="option" data-value="India">India</div>
+            <div class="option" data-value="Italy">Italy</div>
+            <div class="option" data-value="Japan">Japan</div>
+            <div class="option" data-value="South Korea">South Korea</div>
+            <div class="option" data-value="Mexico">Mexico</div>
+            <div class="option" data-value="Netherlands">Netherlands</div>
+            <div class="option" data-value="Norway">Norway</div>
+            <div class="option" data-value="New Zealand">New Zealand</div>
+            <div class="option" data-value="Peru">Peru</div>
+            <div class="option" data-value="Philippines">Philippines</div>
+            <div class="option" data-value="Poland">Poland</div>
+            <div class="option" data-value="Portugal">Portugal</div>
+            <div class="option" data-value="Romania">Romania</div>
+            <div class="option" data-value="Sweden">Sweden</div>
+            <div class="option" data-value="Singapore">Singapore</div>
+            <div class="option" data-value="Thailand">Thailand</div>
+            <div class="option" data-value="Turkey">Turkey</div>
+            <div class="option" data-value="Ukraine">Ukraine</div>
+            <div class="option" data-value="United States">United States</div>
+            <div class="option" data-value="Vietnam">Vietnam</div>
+            <div class="option" data-value="South Africa">South Africa</div>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="englishlvlInput" style="color: #ffffff;">Can you communicate in English:</label>
+        <input type="text" id="englishlvlInput"  th:attr="data-value=${English_level}" th:value="${English_level}"  name="englishLvl" onclick="toggleenglishlvlOptions()" readonly />
+        <div id="englishlvlOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${English_level}" disabled selected th:text="${English_level}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Yes">Yes</div>
+            <div class="option" data-value="So-so">So-so</div>
+            <div class="option" data-value="No">No</div>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="Your_Main_Career" style="color: #ffffff;">Your main career:</label>
+        <input type="text" id="maincareerInput" placeholder="All careers you able to play" th:attr="data-value=${Your_Main_Career}" th:value="${Your_Main_Career}" name="mainCareer" onclick="togglemaincareerOptions()" readonly />
+        <div id="maincareerOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${Your_Main_Career}" disabled selected th:text="${Your_Main_Career}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Mercenary" onclick="selectMainCareer(this.getAttribute('data-value'))">Mercenary</div>
+            <div class="option" data-value="Ranger Veteran">Ranger Veteran</div>
+            <div class="option" data-value="Waystalker">Waystalker</div>
+            <div class="option" data-value="Witch Hunter_Captain">Witch Hunter Captain</div>
+            <div class="option" data-value="Battle Wizard">Battle Wizard</div>
+            <div class="option" data-value="Huntsman">Huntsman</div>
+            <div class="option" data-value="Ironbreaker">Ironbreaker</div>
+            <div class="option" data-value="Handmaiden">Handmaiden</div>
+            <div class="option" data-value="Bounty Hunter">Bounty Hunter</div>
+            <div class="option" data-value="Pyromancer">Pyromancer</div>
+            <div class="option" data-value="Foot Knight">Foot Knight</div>
+            <div class="option" data-value="Slayer">Slayer</div>
+            <div class="option" data-value="Shade">Shade</div>
+            <div class="option" data-value="Zealot">Zealot</div>
+            <div class="option" data-value="Unchained">Unchained</div>
+            <div class="option" data-value="Grail Knight">Grail Knight</div>
+            <div class="option" data-value="Outcast Engineer">Outcast Engineer</div>
+            <div class="option" data-value="Sister of the Thorn">Sister of the Thorn</div>
+            <div class="option" data-value="Warrior Priest of Sigmar">Warrior Priest of Sigmar</div>
+            <div class="option" data-value="Necromancer">Necromancer</div>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="allCareers" style="color: #ffffff;">All careers you able to play:</label>
+        <input type="text" id="allcareersInput" placeholder="All careers you able to play" th:attr="data-value=${All_careers}" th:value="${All_careers}" name="allCareers" onclick="toggleallcareersOptions()"readonly  />
+        <div id="allcareersOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${All_careers}" disabled selected th:text="${All_careers}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Mercenary">Mercenary</div>
+            <div class="option" data-value="Ranger Veteran">Ranger Veteran</div>
+            <div class="option" data-value="Waystalker">Waystalker</div>
+            <div class="option" data-value="Witch Hunter_Captain">Witch Hunter Captain</div>
+            <div class="option" data-value="Battle Wizard">Battle Wizard</div>
+            <div class="option" data-value="Huntsman">Huntsman</div>
+            <div class="option" data-value="Ironbreaker">Ironbreaker</div>
+            <div class="option" data-value="Handmaiden">Handmaiden</div>
+            <div class="option" data-value="Bounty Hunter">Bounty Hunter</div>
+            <div class="option" data-value="Pyromancer">Pyromancer</div>
+            <div class="option" data-value="Foot Knight">Foot Knight</div>
+            <div class="option" data-value="Slayer">Slayer</div>
+            <div class="option" data-value="Shade">Shade</div>
+            <div class="option" data-value="Zealot">Zealot</div>
+            <div class="option" data-value="Unchained">Unchained</div>
+            <div class="option" data-value="Grail Knight">Grail Knight</div>
+            <div class="option" data-value="Outcast Engineer">Outcast Engineer</div>
+            <div class="option" data-value="Sister of the Thorn">Sister of the Thorn</div>
+            <div class="option" data-value="Warrior Priest of Sigmar">Warrior Priest of Sigmar</div>
+            <div class="option" data-value="Necromancer">Necromancer</div>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="difficulty" style="color: #ffffff;">Difficulty you'd like to play on:</label>
+        <input type="text" id="difficultyInput" placeholder="Select days" th:attr="data-value=${Difficulty}" th:value="${Difficulty}" name="difficulty" onclick="toggledifficultyOptions()"readonly  />
+        <div id="difficultyOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${Difficulty}" disabled selected th:text="${Difficulty}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Any">Any</div>
+            <div class="option" data-value="Recruit">Recruit</div>
+            <div class="option" data-value="Veteran">Campaign</div>
+            <div class="option" data-value="Champion">Champion</div>
+            <div class="option" data-value="Cataclysm">Cataclysm</div>
+            <div class="option" data-value="Cataclysm+">Cataclysm+</div>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="gameMode" style="color: #ffffff;">Game mode you would like to play:</label>
+        <input type="text" id="gameModeInput" placeholder="Select days" th:attr="data-value=${Game_mode}" th:value="${Game_mode}" name="gameMode" onclick="togglegameModeOptions()"readonly  />
+            <div id="gameModeOptions" class="option-list" style="display: none;">
+            <div class="option" th:attr="data-value=${Game_mode}" disabled selected th:text="${Game_mode}" style="color: #62d110;"> </div>
+            <div class="option" data-value="Any">Any</div>
+            <div class="option" data-value="Chaos Waste">Chaos Waste</div>
+            <div class="option" data-value="Campaign">Campaign</div>
+            <div class="option" data-value="Deeds">Deeds</div>
+            <div class="option" data-value="Winds of Magic">Winds of Magic</div>
+            </div>
+    </div>
+        <div class="input-group">
+            <label for="days" style="color: #ffffff;">Days you prefer to play:</label>
+            <input type="text" id="playingDaysInput" th:attr="data-value=${Days}" th:value="${Days}" placeholder="Select days" name="playingDays" onclick="toggleDaysOptions()" readonly/>
+            <div id="playingDaysOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${Days}" disabled selected th:text="${Days}" style="color: #62d110;"> ${Days} </div>
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Sunday">Sunday</div>
+                <div class="option" data-value="Monday">Monday</div>
+                <div class="option" data-value="Tuesday">Tuesday</div>
+                <div class="option" data-value="Wednesday">Wednesday</div>
+                <div class="option" data-value="Thursday">Thursday</div>
+                <div class="option" data-value="Friday">Friday</div>
+                <div class="option" data-value="Saturday">Saturday</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="playingHours" style="color: #ffffff;">The time you prefer to play:</label>
+            <input type="text" id="playingHoursInput" th:attr="data-value=${time}" th:value="${time}" placeholder="Select time" name="playingHours" onclick="toggleHoursOptions()" readonly />
+            <div id="playingHoursOptions" class="option-list" style="display: none;">
+                <div class="option" th:attr="data-value=${time}" disabled selected th:text="${time}" style="color: #62d110;"></div>
+                <div class="option" data-value="Any">Any</div>
+                <div class="option" data-value="Weekdays All Day">Weekdays All Day</div>
+                <div class="option" data-value="Weekdays Evening">Weekdays Evening</div>
+                <div class="option" data-value="Weekends All Day">Weekends All Day</div>
+                <div class="option" data-value="Weekends Evening">Weekends Evening</div>
+            </div>
+        </div>
+
+
+        <button type="submit" id="submit-button2" class="nav-button1">Save</button>
+</div>
+</form>
+<div class="container ">
+    <div class="side-container hidden"  id="sideContainer">
+        <div class="inner-side-container">
+
+
+
+            <div id="teamInfoContainer" class="team-info-container">
+                <h2 style="text-align: center;">Team Information</h2>
+
+                <div class="input-group">
+                    <label for="teamName">Team Name:</label>
+                    <input type="text" id="teamName" name="teamName" th:value="${teamName}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamCountry">Country:</label>
+                    <input type="text" id="teamCountry" name="teamCountry" th:value="${teamCountry}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamDifficulty">Team Difficulty:</label>
+                    <input type="text" id="teamDifficulty" name="teamDifficulty" th:value="${teamDifficulty}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamGameMode">Game Mode:</label>
+                    <input type="text" id="teamGameMode" name="teamGameMode" th:value="${teamGameMode}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamPlayingTime">Playing Time:</label>
+                    <input type="text" id="teamPlayingTime" name="teamPlayingTime" th:value="${teamPlayingTime}" required readonly />
+                </div>
+
+                <div class="input-group">
+                    <label for="teamPlayingDays">Playing Days:</label>
+                    <input type="text" id="teamPlayingDays" name="teamPlayingDays" th:value="${teamPlayingDays}" required readonly />
+                </div>
+
+                <button class="nav-button3" id="deleteTeamButton" style="display:none;">Delete Team</button>
+                <button class="nav-button4" id="quitteam" style="display:none;">Leave Team</button>
+            </div>
+        </div>
+    </div>
+    <div class="button-container left">
+        <button id="chat-button" class="toggle-button" onclick="toggleView('chat')">Chat</button>
+    </div>
+    <div class="button-container right">
+        <button id="object-list-button" class="toggle-button" onclick="toggleView('objectList')">Team List</button>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="participants-requests-container">
+            <div class="participants rounded-form">
+                <h3 class="transparent-text">Members</h3>
+                <ul id="participants-list">
+
+                </ul>
+            </div>
+
+            <div class="requests rounded-form">
+                <h3 class="transparent-text">Requests
+
+                    <span id="fetch-requests-btn" class="fetch-requests-icon">&#x21bb;</span>
+                </h3>
+                <ul id="request-list" class="scrollable-list">
+                    <li>
+                        <button class="approve-btn">Approve</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="notInTeamMessage" class="not-in-team-message" style="display: none;">
+            Please join a team or create your own to have access to the chat room.
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="chat-messages" id="chatMessages">
+
+            </div>
+
+            <form class="input-container" id="messageForm">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <input type="text" id="message" placeholder="Enter message" autocomplete="off" required />
+                <button type="submit">Send</button>
+            </form>
+        </div>
+
+            </div>
+
+
+
+    <div id="objectListContent">
+
+
+        <div class="sort-buttons">
+            <button data-sort="name">Name</button>
+            <button data-sort="country">Country</button>
+            <button data-sort="difficulty">Difficulty</button>
+            <button data-sort="gameMode">Game Mode</button>
+            <button data-sort="playingDays">Playing Days</button>
+            <button data-sort="playingTime">Playing Time</button>
+            <button data-sort="refresh" class="refresh-button">Refresh</button>
+        </div>
+
+
+        <div class="chat-messages" id="object-container">
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+
+    'use strict';
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    
+
+
+function toggleDaysOptions() {
+        const optionsList = document.getElementById("playingDaysOptions");
+
+
+function enableInput(button) {
+    const inputField = document.getElementById('NameInput');
+
+
+    inputField.disabled = !inputField.disabled;
+
+
+    button.textContent = inputField.disabled ? 'Change' : 'Save';
+}
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggledifficultyOptions() {
+        const optionsList = document.getElementById("difficultyOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+
+
+    function toggleallcareersOptions() {
+        var optionsList = document.getElementById("allcareersOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function selecteAllcareers(career) {
+    document.getElementById('allcareersInput').value = career;
+    document.getElementById('allcareersOptions').style.display = 'none';
+}
+
+function toggleView(view) {
+    const chatContainer = document.getElementById('chatContainer');
+    const sideContainer = document.getElementById('sideContainer');
+    const objectListContent = document.getElementById('objectListContent');
+
+    if (view === 'chat') {
+        chatContainer.classList.remove('hidden');
+        objectListContent.classList.add('hidden');
+
+
+        fetch('/chatavalibility1')
+            .then(response => response.json())
+            .then(isMember => {
+                
+
+                if (isMember) {
+
+                    sideContainer.classList.remove('hidden');
+                    
+                    connect();
+                    loadChatMessages();
+                    isConnected = true;
+                } else {
+
+                    sideContainer.classList.add('hidden');
+                    showNotInTeamMessage();
+                    document.getElementById('messageForm').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking chat availability:', error);
+                sideContainer.classList.add('hidden');
+            });
+    } else {
+        chatContainer.classList.add('hidden');
+        sideContainer.classList.add('hidden');
+        objectListContent.classList.remove('hidden');
+    }
+}
+
+
+toggleView('chat');
+
+
+  function togglecountryOptions() {
+    var options = document.getElementById('countryOptions');
+    options.style.display = (options.style.display === 'none' || options.style.display === '') ? 'block' : 'none';
+}
+function selectCountry(country) {
+    document.getElementById('countryInput').value = country;
+    document.getElementById('countryOptions').style.display = 'none';
+}
+
+async function fetchNotifications() {
+    
+
+    try {
+        const notificationsContainer = document.getElementById('new-form-container');
+        const notificationsContainerDiv = document.getElementById('notifications-container');
+
+        const response = await fetch('/getnotifications');
+        if (!response.ok) {
+            console.error('');
+            return;
+        }
+
+        const notifications = await response.json();
+        
+
+        notificationsContainerDiv.innerHTML = '';
+
+
+        if (!notifications || notifications.length === 0) {
+            const noNotificationsMessage = document.createElement('div');
+            noNotificationsMessage.classList.add('no-notifications');
+            noNotificationsMessage.textContent = 'There are no new notifications';
+            notificationsContainerDiv.appendChild(noNotificationsMessage);
+        } else {
+
+            notifications.forEach(notification => {
+                const notificationElement = document.createElement('div');
+                notificationElement.classList.add('notification-item');
+
+                const messageElement = document.createElement('span');
+                messageElement.classList.add('message');
+                messageElement.innerHTML = notification.message;
+
+                const buttonElement = document.createElement('button');
+                buttonElement.textContent = 'X';
+                buttonElement.onclick = async function(event) {
+                    event.preventDefault();
+
+                    try {
+
+                        const deleteResponse = await fetch(`/deletenotification/${notification.id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                [csrfHeader]: csrfToken
+                            }
+                        });
+
+                        if (deleteResponse.ok) {
+                            
+
+                            fetchNotifications();
+                        } else {
+                            console.error('');
+                        }
+                    } catch (error) {
+                        console.error('', error);
+                    }
+                };
+
+                notificationElement.appendChild(messageElement);
+                notificationElement.appendChild(buttonElement);
+                notificationsContainerDiv.appendChild(notificationElement);
+            });
+        }
+
+
+        notificationsContainer.style.display = 'block';
+
+    } catch (error) {
+        console.error('', error);
+    }
+}
+
+document.getElementById('profileForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+
+
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+    successMessage.textContent = '';
+    successMessage.style.display = 'none';
+
+
+    fetch('/submitForm1', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            successMessage.textContent = '';
+            successMessage.style.display = 'block';
+
+
+        } else {
+            errorMessage.textContent = data.errorMessage;
+            errorMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error(':', error);
+        errorMessage.textContent = '';
+        errorMessage.style.display = 'block';
+    });
+});
+
+
+document.getElementById('get-notifications-button').onclick = function(event) {
+    const notificationsContainer = document.getElementById('new-form-container');
+
+
+    hideProfile();
+    hideTeamCreator();
+
+
+    if (notificationsContainer.style.display === 'block') {
+        notificationsContainer.style.display = 'none';
+    } else {
+        fetchNotifications();
+    }
+};
+
+
+document.addEventListener('click', function(event) {
+    const notificationsContainer = document.getElementById('new-form-container');
+    const button = document.getElementById('get-notifications-button');
+
+
+    if (!notificationsContainer.contains(event.target) && !button.contains(event.target)) {
+        notificationsContainer.style.display = 'none';
+    }
+});
+
+document.addEventListener('click', function(event) {
+    const notificationsContainer = document.getElementById('new-form-container');
+    const button = document.getElementById('get-notifications-button');
+
+
+    if (!notificationsContainer.contains(event.target) && !button.contains(event.target)) {
+        notificationsContainer.style.display = 'none';
+    }
+});
+
+
+
+
+function showAlert(message) {
+    return new Promise((resolve) => {
+        const alertBox = document.getElementById('custom-alert');
+        const alertMessage = document.getElementById('alert-message');
+
+        alertMessage.textContent = message;
+        alertBox.style.display = 'block';
+
+
+        document.getElementById('close-alert').onclick = () => {
+            closeAlert();
+            resolve();
+        };
+    });
+}
+
+
+function closeAlert() {
+    const alertBox = document.getElementById('custom-alert');
+    alertBox.style.display = 'none';
+}
+
+
+function submitForm(event) {
+    event.preventDefault();
+
+
+    const form = document.getElementById('profileForm');
+
+
+    const formData = new FormData(form);
+
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'none';
+
+
+        if (!data.success) {
+            document.getElementById('errorMessage').textContent = data.errorMessage;
+            document.getElementById('errorMessage').style.display = 'block';
+        } else {
+
+            document.getElementById('successMessage').textContent = 'Profile updated successfully!';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'An error occurred, please try again later.';
+        document.getElementById('errorMessage').style.display = 'block';
+    });
+}
+
+let roomName = '';
+let isConnected = false;
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/chatavalibility')
+        .then(response => response.json())
+        .then(data => {
+
+            
+
+            if (data.roomName) {
+                roomName = data.roomName;
+                
+
+                if (data.isMember) {
+                
+                    connect();
+                    sideContainer.classList.remove('hidden');
+                } else {
+                    sideContainer.classList.add('hidden');
+                    showNotInTeamMessage();
+                    document.getElementById('messageForm').style.display = 'none';
+                }
+            } else {
+                console.error('Room name is missing from the server response');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking chat availability:', error);
+        });
+});
+
+function toggleNewForm() {
+    const newFormContainer = document.getElementById('new-form-container');
+
+    if (newFormContainer.style.display === 'none') {
+        newFormContainer.style.display = 'block';
+    } else {
+        newFormContainer.style.display = 'none';
+    }
+}
+
+function getUserId() {
+    return fetch('/api/getuserid')
+        .then(response => response.json())
+        .then(data => data.id)
+        .catch(error => {
+            console.error('Error fetching user ID:', error);
+        });
+}
+
+function subscribeToUserChannel(userId) {
+    if (!userId) {
+        console.error('User ID not found');
+        return;
+    }
+
+
+    if (!stompClient) {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            
+
+
+            stompClient.subscribe("/main/" + userId, function(message) {
+                
+                
+
+                if (message.body === 'update') {
+    
+    showAlert("You've been added to the team!").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'delete') {
+    
+    showAlert("You've been removed from the team").then(() => {
+        location.reload();
+    });
+} else if (message.body === 'teamdeletedd') {
+    
+    showAlert('Team has been deleted or you have been excluded from it').then(() => {
+        location.reload();
+    });
+} else if (message.body === 'LEAVE') {
+    
+    showAlert('A team member has left the team' + userId + ': ' + message.body).then(() => {
+        location.reload();
+    });
+} else {
+    
+}
+            });
+
+            
+        }, function(error) {
+            console.error('Error during WebSocket connection:', error);
+        });
+    }
+}async function loadChatMessages() {
+    try {
+        const response = await fetch('/chatMessages');
+
+        if (!response.ok) {
+            throw new Error(`: ${response.status} ${response.statusText}`);
+        }
+
+        const messages = await response.json();
+        
+
+
+        messageArea.innerHTML = '';
+
+        messages.forEach(message => {
+
+            var messageElement = document.createElement('li');
+
+
+            if (message.sender === "Join Message") {
+
+                messageElement.classList.add('join-message');
+                messageElement.textContent = message.content || "User connected";
+            } else if (message.sender === "Leave Message") {
+
+                messageElement.classList.add('leave-message');
+                messageElement.textContent = message.content || "User left";
+            } else {
+                let displayContent = message.content;
+                let displaySender = message.sender;
+
+
+                if (message.isCurrentUser) {
+                    messageElement.classList.add('my-message');
+                } else {
+                    messageElement.classList.add('other-message');
+                }
+
+
+                var usernameElement = document.createElement('span');
+                usernameElement.classList.add('username');
+                usernameElement.textContent = displaySender.charAt(0);
+
+
+                var backgroundColor = getAvatarColor(displaySender);
+                usernameElement.style.backgroundColor = backgroundColor;
+
+
+                messageElement.appendChild(usernameElement);
+
+
+                var textElement = document.createElement('p');
+                var messageText = document.createTextNode(displayContent || "");
+                textElement.appendChild(messageText);
+                messageElement.appendChild(textElement);
+            }
+
+
+            messageArea.appendChild(messageElement);
+        });
+
+
+        messageArea.scrollTop = messageArea.scrollHeight;
+    } catch (error) {
+        console.error('', error);
+    }
+}
+
+
+function setupUserSubscription() {
+    getUserId().then(userId => {
+        subscribeToUserChannel(userId);
+    }).catch(err => {
+        console.error('Error getting user ID:', err);
+    });
+}
+
+
+window.onload = setupUserSubscription;
+
+
+function connect() {
+    if (isConnected) {
+        
+        return;
+    }
+
+    
+
+    getUserId().then(userId => {
+        if (!userId) {
+            console.error('User ID not found');
+            return;
+        }
+
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            
+
+
+            stompClient.subscribe("/main/" + roomName, onMessageReceived);
+            
+
+
+            stompClient.subscribe("/main/" + userId, function(message) {
+                
+                
+
+                if (message.body === 'update') {
+                    showAlert("You've been added to the team!").then(() => {
+                        location.reload();
+                    });
+                } else if (message.body === 'delete') {
+                    showAlert("You've been removed from the team").then(() => {
+                        location.reload();
+                    });
+                } else if (message.body === 'teamdeletedd') {
+                    showAlert('The team has been deleted or you have been excluded from it').then(() => {
+                        location.reload();
+                    });
+                } else if (message.body === 'LEAVE') {
+                    showAlert('A team member has left the team').then(() => {
+                        
+                        location.reload();
+                    });
+                } else if (message.type === 'REMOVE') {
+
+    
+    var leaveMessageElement = document.createElement('li');
+    leaveMessageElement.classList.add('leave-message');
+    leaveMessageElement.textContent = message.sender + " has left the chat.";
+    messageArea.appendChild(leaveMessageElement);
+
+
+    fetch('/mainpage/teammembers')
+        .then(response => response.json())
+        .then(members => {
+
+            updateMemberList(members);
+        })
+        .catch(error => {
+            console.error(':', error);
+        });
+
+    fetchRequests();
+}
+            });
+
+            
+
+            isConnected = true;
+            
+            connectingElement.classList.add('hidden');
+        }, function(error) {
+            console.error('Error during WebSocket connection:', error);
+        });
+    });
+}
+
+
+function sendMessage(event) {
+    event.preventDefault();
+
+    const messageContent = document.querySelector('#message').value.trim();
+    if (messageContent && stompClient) {
+        const chatMessage = {
+            sender: username,
+            content: messageContent,
+            type: 'CHAT'
+        };
+
+
+        stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+
+        document.querySelector('#message').value = '';
+    } else {
+        console.warn('');
+    }
+}
+
+
+document.getElementById('deleteTeamButton').addEventListener('click', function(event) {
+    event.preventDefault();
+
+
+    fetch('/mainpage/getallteammembersid')
+        .then(response => response.json())
+        .then(ids => {
+
+            if (stompClient && stompClient.connected) {
+                ids.forEach(id => {
+                    stompClient.send("/app/teamdeleted", {}, id.toString());
+                    
+                });
+            }
+
+
+            return fetch('/mainpage/deleteTeam', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                }
+            });
+        })
+        .then(() => {
+
+            return showAlert('The team has been successfully deleted');
+        })
+        .then(() => {
+            
+
+
+            fetchRequests();
+
+
+            location.reload();
+        })
+        .catch(error => {
+            console.error(':', error);
+
+        });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const fetchRequestsBtn = document.getElementById('fetch-requests-btn');
+
+    fetchRequestsBtn.addEventListener('click', function() {
+
+        fetchRequestsBtn.classList.add('clicked');
+
+
+        setTimeout(() => {
+            fetchRequestsBtn.classList.remove('clicked');
+        }, 600);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const fetchRequestsBtn = document.getElementById('fetch-requests-btn');
+
+    fetchRequestsBtn.addEventListener('click', function() {
+
+        fetchRequestsBtn.classList.add('clicked');
+
+
+        setTimeout(() => {
+            fetchRequestsBtn.classList.remove('clicked');
+        }, 600);
+    });
+});
+
+
+function onMessageReceived(payload) {
+    const message = JSON.parse(payload.body);
+    
+
+
+    var messageElement = document.createElement('li');
+    var usernameElement = document.createElement('span');
+    usernameElement.classList.add('username');
+
+
+   if (message.type === 'JOIN') {
+
+    var joinMessageElement = document.createElement('li');
+    joinMessageElement.classList.add('join-message');
+    joinMessageElement.textContent = message.sender + " has joined the chat.";
+    messageArea.appendChild(joinMessageElement);
+
+
+    fetch('/mainpage/teammembers')
+        .then(response => response.json())
+        .then(data => {
+            if (data.members && Array.isArray(data.members)) {
+
+                
+                updateMemberList(data.members);
+            } else {
+                console.error('');
+            }
+        })
+        .catch(error => {
+            console.error('', error);
+        });
+
+    fetchRequests();
+}else if (message.type === 'REMOVE') {
+
+    
+
+    var leaveMessageElement = document.createElement('li');
+    leaveMessageElement.classList.add('leave-message');
+    leaveMessageElement.textContent = message.sender + " has left the chat.";
+    messageArea.appendChild(leaveMessageElement);
+
+
+    fetch('/mainpage/teammembers')
+        .then(response => response.json())
+        .then(data => {
+            if (data.members && Array.isArray(data.members)) {
+
+                
+                updateMemberList(data.members);
+            } else {
+                console.error('');
+            }
+        })
+        .catch(error => {
+            console.error('', error);
+        });
+
+} else {
+
+        if (message.sender === username) {
+
+            messageElement.classList.add('my-message');
+        } else {
+
+            messageElement.classList.add('other-message');
+        }
+
+
+        usernameElement.textContent = message.sender.charAt(0);
+
+
+        var backgroundColor = getAvatarColor(message.sender);
+        usernameElement.style.backgroundColor = backgroundColor;
+
+
+        messageElement.appendChild(usernameElement);
+
+
+        messageElement.classList.add('chat-message');
+        var textElement = document.createElement('p');
+
+
+        var messageText = document.createTextNode(message.content || "");
+        textElement.appendChild(messageText);
+        messageElement.appendChild(textElement);
+
+
+        messageArea.appendChild(messageElement);
+    }
+
+
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+
+
+
+
+
+function showNotInTeamMessage() {
+    const messageDiv = document.getElementById("notInTeamMessage");
+    if (messageDiv) {
+        messageDiv.style.display = "block";
+    }
+}
+
+function hideNotInTeamMessage() {
+    const messageDiv = document.getElementById("notInTeamMessage");
+    if (messageDiv) {
+        messageDiv.style.display = "none";
+    }
+}
+
+let isOwner = false;
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    function checkIfOwner() {
+        fetch('/isowner')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                isOwner = data === true;
+
+                const deleteTeamButton = document.getElementById('deleteTeamButton');
+                if (isOwner) {
+                    deleteTeamButton.style.display = 'inline-block';
+                } else {
+                    deleteTeamButton.style.display = 'none';
+                }
+
+
+                const quitTeamButton = document.getElementById('quitteam');
+                if (!isOwner) {
+                    quitTeamButton.style.display = 'inline-block';
+                } else {
+                    quitTeamButton.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+
+
+    checkIfOwner();
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    checkUserTeamStatus();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    function leaveTeam() {
+
+        fetch('/api/getuserid')
+            .then(response => response.json())
+            .then(data => {
+                const userId = data.id;
+
+
+                fetch(`/getmembername/${userId}`)
+                    .then(response => response.text())
+                    .then(userName => {
+
+                        if (stompClient && stompClient.connected) {
+
+                            const chatMessage = {
+                                sender: userName,
+                                type: 'LEAVE'
+                            };
+
+
+
+
+                            stompClient.send("/app/teamdeleted", {}, userId.toString());
+                            
+
+
+
+                            stompClient.send("/app/LEAVE", {}, JSON.stringify(chatMessage));
+                            
+
+                            chatMessage.type = 'REMOVE';
+                            stompClient.send("/app/chat.remove", {}, JSON.stringify(chatMessage));
+                            
+
+
+                        }
+
+
+                        fetch('/mainpage/leaveteam', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok ' + response.statusText);
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            if (data === "deleted") {
+                                showAlert("You've left the team").then(() => {
+
+                                    location.reload();
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('There was a problem with the fetch operation:', error);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching user name:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Error fetching userId:', error);
+            });
+    }
+
+
+    const quitTeamButton = document.getElementById('quitteam');
+    quitTeamButton.addEventListener('click', leaveTeam);
+});
+
+  
+
+
+    function togglemaincareerOptions() {
+    var options = document.getElementById("maincareerOptions");
+
+    options.style.display = (options.style.display === "none" || options.style.display === "") ? "block" : "none";
+}
+
+function selectMainCareer(career) {
+    document.getElementById('maincareerInput').value = career;
+    document.getElementById('maincareerOptions').style.display = 'none';
+}
+
+
+
+document.getElementById('teamCreationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+    successMessage.textContent = '';
+    successMessage.style.display = 'none';
+
+
+    fetch('/submitForm2', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            successMessage.textContent = '';
+            successMessage.style.display = 'block';
+
+        showAlert('Team has been successfully created! ')
+    .then(() => {
+
+
+
+        location.reload();
+    });
+        } else {
+            errorMessage.textContent = data.errorMessage;
+            errorMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error(':', error);
+        errorMessage.textContent = '.';
+        errorMessage.style.display = 'block';
+    });
+});
+
+ 
+
+
+
+function toggleenglishlvlOptions() {
+    var options = document.getElementById("englishlvlOptions");
+    options.style.display = (options.style.display === "none" || options.style.display === "") ? "block" : "none";
+}
+
+function selectEnglishLevel(level) {
+    document.getElementById("englishlvlInput").value = level;
+    document.getElementById("englishlvlOptions").style.display = "none";
+}
+
+
+
+
+const inputField = document.getElementById('teamName');
+
+inputField.addEventListener('focus', function() {
+    this.placeholder = '';
+});
+
+inputField.addEventListener('blur', function() {
+    if (this.value === '') {
+        this.placeholder = "Team's Name";
+    }
+});
+
+
+
+
+ 
+
+
+     function togglecountryOptions() {
+    var options = document.getElementById('countryOptions');
+    options.style.display = (options.style.display === 'none' || options.style.display === '') ? 'block' : 'none';
+}
+function selectCountry(country) {
+    document.getElementById('countryInput').value = country;
+    document.getElementById('countryOptions').style.display = 'none';
+}
+
+
+function enableCountrySelect(button) {
+    const countrySelect = document.getElementById('country');
+
+
+    countrySelect.disabled = false;
+
+
+    countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.code;
+        option.innerText = country.name;
+        countrySelect.appendChild(option);
+    });
+}
+    function toggleHoursOptions() {
+        const optionsList = document.getElementById("playingHoursOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamHoursOptions() {
+        const optionsList = document.getElementById("TeamplayingHoursOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsPlayingDays() {
+        const optionsList = document.getElementById("TeamsPlayingDaysOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsGameModeOptions() {
+        const optionsList = document.getElementById("TeamsGameModeOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleTeamsDifficultyOptions() {
+        const optionsList = document.getElementById("TeamsDifficultyOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+     function toggleTeamsCountryOptions() {
+        const optionsList = document.getElementById("TeamsCountryOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    function togglegameModeOptions() {
+        const optionsList = document.getElementById("gameModeOptions");
+
+
+        optionsList.style.display = optionsList.style.display === "none" ? "block" : "none";
+    }
+
+    document.querySelectorAll('#playingDaysOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingDaysInput = document.getElementById("playingDaysInput");
+
+
+        const allOptions = document.querySelectorAll('#playingDaysOptions .option');
+
+
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
+
+
+        if (anyOptions.includes(this)) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            this.classList.add('selected');
+        } else {
+
+
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        playingDaysInput.value = selectedOptions.join(', ') || playingDaysInput.getAttribute("data-value");
+    });
+});
+
+
+
+
+document.querySelectorAll('#gameModeOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const gameModeInput = document.getElementById("gameModeInput");
+
+
+        const allOptions = document.querySelectorAll('#gameModeOptions .option');
+
+
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
+
+
+        if (anyOptions.includes(this)) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            this.classList.add('selected');
+        } else {
+
+
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        gameModeInput.value = selectedOptions.join(', ') || gameModeInput.getAttribute("data-value");
+    });
+});
+
+document.querySelectorAll('#difficultyOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const difficultyInput = document.getElementById("difficultyInput");
+
+
+        const allOptions = document.querySelectorAll('#difficultyOptions .option');
+
+
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
+
+
+        if (anyOptions.includes(this)) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            this.classList.add('selected');
+        } else {
+
+
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        difficultyInput.value = selectedOptions.join(', ') || difficultyInput.getAttribute("data-value");
+    });
+});
+
+
+
+
+
+document.querySelectorAll('#allcareersOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const allCareersInput = document.getElementById("allcareersInput");
+
+
+        const firstOption = document.querySelector('#allcareersOptions .option[disabled]');
+
+
+        const isSelected = this.classList.contains('selected');
+
+
+        if (this === firstOption) {
+
+            document.querySelectorAll('#allcareersOptions .option').forEach(opt => {
+                if (opt !== firstOption) {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            this.classList.add('selected');
+        } else {
+
+            if (isSelected) {
+
+                this.classList.remove('selected');
+            } else {
+
+                this.classList.add('selected');
+                firstOption.classList.remove('selected');
+            }
+        }
+
+
+        const selectedOptions = Array.from(document.querySelectorAll('#allcareersOptions .option.selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        allCareersInput.value = selectedOptions.join(', ') || allCareersInput.getAttribute("data-value");
+
+
+
+    });
+});
+
+
+
+document.querySelectorAll('#maincareerOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const mainCareerInput = document.getElementById("maincareerInput");
+
+
+        const isSelected = this.classList.contains('selected');
+
+
+        document.querySelectorAll('#maincareerOptions .option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        if (isSelected) {
+
+            mainCareerInput.value = mainCareerInput.getAttribute("data-value");
+        } else {
+
+            this.classList.add('selected');
+            mainCareerInput.value = this.dataset.value;
+        }
+
+
+        document.getElementById("maincareerOptions").style.display = "none";
+    });
+});
+
+
+
+
+
+    document.querySelectorAll('#englishlvlOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const englishlvlInput = document.getElementById("englishlvlInput");
+
+
+        const isSelected = this.classList.contains('selected');
+
+
+        document.querySelectorAll('#englishlvlOptions .option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        if (isSelected) {
+
+            englishlvlInput.value = englishlvlInput.getAttribute("data-value");
+        } else {
+
+            this.classList.add('selected');
+            englishlvlInput.value = this.dataset.value;
+        }
+
+
+        document.getElementById("englishlvlOptions").style.display = "none";
+    });
+});
+
+   document.querySelectorAll('#countryOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const countryInput = document.getElementById("countryInput");
+
+
+        const isSelected = this.classList.contains('selected');
+
+
+        document.querySelectorAll('#countryOptions .option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        if (isSelected) {
+
+            countryInput.value = document.getElementById("countryInput").getAttribute("data-value");
+        } else {
+
+            this.classList.add('selected');
+            countryInput.value = this.dataset.value;
+        }
+
+
+        document.getElementById("countryOptions").style.display = "none";
+    });
+});
+
+
+
+
+
+document.querySelectorAll('#playingHoursOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingHoursInput = document.getElementById("playingHoursInput");
+
+
+        const allOptions = document.querySelectorAll('#playingHoursOptions .option');
+
+
+        const anyOptions = Array.from(allOptions).filter(opt => opt.dataset.value === "Any");
+
+
+        if (anyOptions.includes(this)) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            this.classList.add('selected');
+        } else {
+
+
+            anyOptions.forEach(anyOption => anyOption.classList.remove('selected'));
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        playingHoursInput.value = selectedOptions.join(', ') || playingHoursInput.getAttribute("data-value");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const notificationsContainer = document.getElementById('notifications-container');
+
+
+    if (notificationsContainer.scrollHeight > 600) {
+        notificationsContainer.classList.add('show-scroll');
+    }
+});
+
+
+
+document.querySelectorAll('#TeamplayingHoursOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingHoursInput = document.getElementById("TeamplayingHoursInput");
+
+
+        const allOptions = document.querySelectorAll('#TeamplayingHoursOptions .option');
+
+
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+
+        if (this === anyOption) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            anyOption.classList.add('selected');
+        } else {
+
+
+            anyOption.classList.remove('selected');
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        playingHoursInput.value = selectedOptions.join(', ') || playingHoursInput.getAttribute("data-value");
+    });
+});
+
+document.querySelectorAll('#TeamsPlayingDaysOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const playingDaysInput = document.getElementById("TeamsPlayingDaysInput");
+
+
+        const allOptions = document.querySelectorAll('#TeamsPlayingDaysOptions .option');
+
+
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+
+        if (this === anyOption) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            anyOption.classList.add('selected');
+        } else {
+
+
+            anyOption.classList.remove('selected');
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        playingDaysInput.value = selectedOptions.join(', ') || playingDaysInput.getAttribute("data-value");
+    });
+});
+
+document.querySelectorAll('#TeamsGameModeOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const gameModeInput = document.getElementById("TeamsGameModeInput");
+
+
+        const allOptions = document.querySelectorAll('#TeamsGameModeOptions .option');
+
+
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+
+        if (this === anyOption) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            anyOption.classList.add('selected');
+        } else {
+
+
+            anyOption.classList.remove('selected');
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        gameModeInput.value = selectedOptions.join(', ') || gameModeInput.getAttribute("data-value");
+    });
+});
+
+document.querySelectorAll('#TeamsDifficultyOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const difficultyInput = document.getElementById("TeamsDifficultyInput");
+
+
+        const allOptions = document.querySelectorAll('#TeamsDifficultyOptions .option');
+
+
+        const anyOption = Array.from(allOptions).find(opt => opt.dataset.value === "Any");
+
+
+        if (this === anyOption) {
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            anyOption.classList.add('selected');
+        } else {
+
+
+            anyOption.classList.remove('selected');
+
+            this.classList.toggle('selected');
+        }
+
+
+        const selectedOptions = Array.from(allOptions)
+                                      .filter(opt => opt.classList.contains('selected'))
+                                      .map(opt => opt.dataset.value);
+
+
+        difficultyInput.value = selectedOptions.join(', ') || difficultyInput.getAttribute("data-value");
+    });
+});
+
+
+
+
+
+document.querySelectorAll('#TeamsCountryOptions .option').forEach(option => {
+    option.addEventListener('click', function() {
+        const TeamsCountryInput = document.getElementById("TeamsCountryInput");
+        const optionsList = document.getElementById("TeamsCountryOptions");
+
+
+        document.querySelectorAll('#TeamsCountryOptions .option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+
+        this.classList.add('selected');
+
+
+        TeamsCountryInput.value = this.dataset.value || "Choose your option";
+
+
+        optionsList.style.display = "none";
+    });
+});
+
+
+
+   function showChat() {
+        document.getElementById('chatContainer').style.display = 'block';
+        document.getElementById('objectListContent').style.display = 'none';
+    }
+
+    function showObjectList() {
+        document.getElementById('chatContainer').style.display = 'none';
+        document.getElementById('objectListContent').style.display = 'block';
+    }
+
+
+
+    function toggleProfile() {
+    hideTeamCreator();
+    const profileContainer = document.getElementById('profileContainer');
+    profileContainer.classList.toggle('active');
+}
+
+    function toggleTeamCreator() {
+    hideProfile();
+    const teamCreationForm = document.getElementById('teamCreationContainer');
+    teamCreationForm.classList.toggle('active');
+}
+
+    function hideProfile() {
+        const profileContainer = document.getElementById('profileContainer');
+        profileContainer.classList.remove('active');
+    }
+
+    function hideTeamCreator() {
+        const teamCreationForm = document.getElementById('teamCreationContainer');
+        teamCreationForm.classList.remove('active');
+    }
+
+
+    var chatPage = document.querySelector('#chat-page');
+    var messageForm = document.querySelector('#messageForm');
+    var messageInput = document.querySelector('#message');
+    var messageArea = document.querySelector('#chatMessages')
+    var connectingElement = document.querySelector('.connecting');
+    var participants = [];
+
+    var stompClient = null;
+    var username = document.querySelector('#username').value;
+
+   var colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC300"];
+   var currentColorIndex = 0;
+
+
+
+
+
+
+
+    function onError(error) {
+        connectingElement.textContent = '';
+        connectingElement.style.color = 'red';
+    }
+
+    function send(event) {
+        var messageContent = messageInput.value.trim();
+
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: username,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+
+            stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+function submitForm(event) {
+
+
+
+    
+}
+
+
+
+
+
+
+
+function onParticipantJoined(name) {
+    var participantsList = document.querySelector('.participants ul');
+    var listItem = document.createElement('li');
+
+
+    listItem.textContent = name;
+
+
+    var backgroundColor = getAvatarColor(name);
+    listItem.style.backgroundColor = backgroundColor;
+
+
+    participantsList.appendChild(listItem);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    function loadTeamsData(url) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const objectContainer = document.getElementById('object-container');
+                objectContainer.innerHTML = '';
+
+
+                
+                data.forEach(item => {
+                    
+
+                    const card = document.createElement('div');
+                    card.classList.add('object-card');
+
+                    const namePara = document.createElement('p');
+                    namePara.classList.add('centered', 'text-background');
+                    namePara.textContent = item.teamName;
+                    card.appendChild(namePara);
+
+                    const countryPara = createInfoParagraph(`Country: ${item.teamsCountry}`);
+                    const difficultyPara = createInfoParagraph(`Difficulty: ${item.teamsDifficulty}`);
+                    const gameModePara = createInfoParagraph(`Game Mode: ${item.teamsGameMode}`);
+                    const playingDaysPara = createInfoParagraph(`Playing Days: ${item.teamsPlayingDays}`);
+                    const playingTimePara = createInfoParagraph(`Playing Time: ${item.teamsPlayingTime}`);
+
+
+                    card.appendChild(countryPara);
+                    card.appendChild(difficultyPara);
+                    card.appendChild(gameModePara);
+                    card.appendChild(playingDaysPara);
+                    card.appendChild(playingTimePara);
+
+
+                    const button = document.createElement('button');
+                    button.textContent = 'Ask to join';
+
+
+                    if (item.buttonActive === true) {
+                        button.disabled = false;
+                        button.classList.remove('disabled');
+                    } else {
+                        button.disabled = true;
+                        button.classList.add('disabled');
+                    }
+
+
+                    button.addEventListener('click', function() {
+                        fetch('/joinrequest', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken
+                            },
+                            body: JSON.stringify({ teamName: item.teamName })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                            throw new Error('Network response was not ok.');
+                        })
+                        .then(data => {
+                            
+
+
+                            if (data.message === "User is already a member" && data.success === false) {
+                                showAlert('You are already a member of a team');
+                                return;
+                            }
+
+
+                            button.disabled = true;
+                            button.classList.add('disabled');
+                            button.textContent = 'Request Sent';
+                        })
+                        .catch(error => console.error(':', error));
+                    });
+
+
+                    card.appendChild(button);
+                    objectContainer.appendChild(card);
+                });
+            })
+            .catch(error => console.error('', error));
+    }
+
+
+    loadTeamsData('/mainpage/teams');
+
+
+    const sortButtons = document.querySelectorAll('.sort-buttons button');
+    sortButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sortValue = button.getAttribute('data-sort');
+            
+
+
+            loadTeamsData(`/mainpage/teams?sortBy=${sortValue}`);
+        });
+    });
+
+
+    function createInfoParagraph(text) {
+        const para = document.createElement('p');
+        para.classList.add('text-background');
+        para.textContent = text;
+        return para;
+    }
+});
+
+function getAvatarColor(name) {
+
+    function hashCode(str) {
+        return Array.from(str).reduce((hash, char) => hash * 31 + char.charCodeAt(0), 0);
+    }
+
+
+    function generateColorFromHash(hash) {
+        let r = (hash & 0xFF0000) >> 16;
+        let g = (hash & 0x00FF00) >> 8;
+        let b = hash & 0x0000FF;
+
+
+        const brightnessFactor = 0.8;
+        r = Math.floor(r * brightnessFactor);
+        g = Math.floor(g * brightnessFactor);
+        b = Math.floor(b * brightnessFactor);
+
+
+        const minBrightness = 70;
+        r = Math.max(r, minBrightness);
+        g = Math.max(g, minBrightness);
+        b = Math.max(b, minBrightness);
+
+
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+
+    const hash = Math.abs(hashCode(name));
+    return generateColorFromHash(hash);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    fetch('/mainpage/teammembers')
+        .then(response => response.json())
+        .then(data => {
+
+            updateMemberList(data.members);
+        })
+        .catch(error => {
+            console.error('Error fetching team members:', error);
+        });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    fetchRequests();
+});
+
+function fetchRequests() {
+    fetch('/mainpage/requestsList')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const requestList = document.getElementById('request-list');
+            requestList.innerHTML = '';
+
+            data.forEach(user => {
+                const listItem = document.createElement('li');
+                const userContainer = document.createElement('div');
+                userContainer.className = 'user-name-container';
+
+                const userName = document.createElement('div');
+                userName.className = 'user-name';
+                userName.textContent = user.name;
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = `
+                    <strong>Country:</strong> ${user.country}<br>
+                    <strong>English Level:</strong> ${user.englishLvl}<br>
+                    <strong>Main Career:</strong> ${user.mainCareer}<br>
+                    <strong>All Careers:</strong> ${user.allCareers}<br>
+                    <strong>Playing Hours:</strong> ${user.playingHours}<br>
+                    <strong>Playing Days:</strong> ${user.playingDays}<br>
+                    <strong>Difficulty:</strong> ${user.difficulty}<br>
+                    <strong>Game Mode:</strong> ${user.gameMode}
+                `;
+
+
+                userName.appendChild(tooltip);
+                userName.addEventListener('mouseenter', (event) => {
+                    tooltip.classList.add('visible');
+                    const rect = event.target.getBoundingClientRect();
+                    tooltip.style.top = `${rect.top + window.scrollY}px`;
+                    tooltip.style.left = `${rect.right + 10}px`;
+                });
+                userName.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('visible');
+                });
+
+
+                const approveButton = document.createElement('button');
+                approveButton.className = 'approve-btn';
+                approveButton.textContent = 'Add';
+                approveButton.style.display = 'inline-block';
+                approveButton.addEventListener('click', () => {
+                    addMemberToTeam(user.name);
+                });
+
+
+                const rejectButton = document.createElement('button');
+                rejectButton.className = 'reject-btn';
+                rejectButton.textContent = 'Reject';
+                rejectButton.style.display = 'inline-block';
+                rejectButton.addEventListener('click', () => {
+                    rejectUser(user.name);
+                });
+
+
+                const buttonsContainer = document.createElement('div');
+                buttonsContainer.style.display = 'flex';
+                buttonsContainer.style.width = '100%';
+                buttonsContainer.appendChild(approveButton);
+                buttonsContainer.appendChild(rejectButton);
+
+
+                userContainer.appendChild(userName);
+                userContainer.appendChild(buttonsContainer);
+                listItem.appendChild(userContainer);
+                requestList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+
+function rejectUser(userName) {
+    
+
+
+    fetch(`/mainpage/deleterequest?userName=${userName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reject user');
+        }
+        return response.text();
+    })
+    .then(data => {
+        if (data === "deleted") {
+            
+            fetchRequests();
+            showAlert('User has been rejected!');
+        } else {
+            throw new Error('Unexpected server response');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+
+    });
+}
+
+const fetchRequestsButton = document.getElementById('fetch-requests-btn');
+fetchRequestsButton.addEventListener('click', function() {
+    fetchRequests();
+});
+
+
+
+
+
+function addMemberToTeam(userName) {
+    
+
+
+    fetch(`/mainpage/addmember?userName=${userName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add member');
+        }
+        return response.json();
+    })
+    .then(data => {
+        
+
+
+        fetchRequests();
+        updateMemberList(data.members);
+
+
+        if (stompClient && stompClient.connected) {
+
+            stompClient.send("/app/chat.joined", {}, JSON.stringify({
+                sender: userName,
+                type: 'JOIN'
+            }));
+            
+
+
+            stompClient.send("/app/accepted", {}, userName);
+        }
+
+        showAlert('Member added to team!');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+
+    });
+}
+
+function updateRequestList(requests) {
+    const requestList = document.getElementById('request-list');
+    requestList.innerHTML = '';
+
+    requests.forEach(request => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Request from ${request.senderName}`;
+        const approveButton = document.createElement('button');
+        approveButton.className = 'approve-btn';
+        approveButton.textContent = 'Approve';
+        listItem.appendChild(approveButton);
+        requestList.appendChild(listItem);
+    });
+}
+const memberColors = new Map();
+
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+
+
+    function getBrightness(r, g, b) {
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    let r, g, b, brightness;
+
+    do {
+
+        r = Math.floor(Math.random() * 256);
+        g = Math.floor(Math.random() * 256);
+        b = Math.floor(Math.random() * 256);
+
+        brightness = getBrightness(r, g, b);
+
+
+    } while (brightness > 200 || brightness < 50);
+
+
+    color += (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
+
+    return color;
+}
+
+
+function updateMemberList(members) {
+    const participantsList = document.getElementById('participants-list');
+    participantsList.innerHTML = '';
+
+
+    if (!Array.isArray(members) || members.length === 0) {
+        console.error('');
+        return;
+    }
+
+
+    const storedColors = JSON.parse(localStorage.getItem('participantColors')) || {};
+
+    members.forEach(function(member, index) {
+        const listItem = document.createElement('li');
+        const userNameContainer = document.createElement('div');
+        userNameContainer.className = 'user-name-container';
+
+        const userName = document.createElement('div');
+        userName.className = 'user-name';
+        userName.textContent = member.name;
+
+
+        if (!storedColors[member.name]) {
+            storedColors[member.name] = getRandomColor();
+        }
+        userName.style.backgroundColor = getAvatarColor(member.name);
+
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = `
+            <strong>Country:</strong> ${member.country}<br>
+            <strong>English Level:</strong> ${member.englishLvl}<br>
+            <strong>Main Career:</strong> ${member.mainCareer}<br>
+            <strong>All Careers:</strong> ${member.allCareers}<br>
+            <strong>Playing Hours:</strong> ${member.playingHours}<br>
+            <strong>Playing Days:</strong> ${member.playingDays}<br>
+            <strong>Difficulty:</strong> ${member.difficulty}<br>
+            <strong>Game Mode:</strong> ${member.gameMode}
+        `;
+
+
+        userName.appendChild(tooltip);
+        userName.addEventListener('mouseenter', (event) => {
+            tooltip.classList.add('visible');
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.top = `${rect.top + window.scrollY}px`;
+            tooltip.style.left = `${rect.right + 10}px`;
+        });
+        userName.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+        });
+
+
+        const removeButton = document.createElement('button');
+        removeButton.className = 'remove-button';
+        removeButton.textContent = 'Remove user';
+
+
+        if (index === 0) {
+            removeButton.style.display = 'none';
+        } else if (isOwner) {
+
+            removeButton.addEventListener('click', function() {
+                const userId = member.id;
+                removeMember(userId);
+            });
+        } else {
+            removeButton.style.display = 'none';
+        }
+
+
+        userNameContainer.appendChild(userName);
+        userNameContainer.appendChild(removeButton);
+
+
+        listItem.appendChild(userNameContainer);
+        participantsList.appendChild(listItem);
+    });
+
+
+    localStorage.setItem('participantColors', JSON.stringify(storedColors));
+}
+
+
+function deleteUser(userName) {
+    
+
+
+    fetch(`/mainpage/deleterequest?userName=${userName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete user');
+        }
+        return response.text();
+    })
+    .then(data => {
+        if (data === "deleted") {
+            
+            fetchRequests();
+            showAlert('User has been deleted!');
+        } else {
+            throw new Error('Unexpected server response');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+
+    });
+}
+
+function removeMember(userId) {
+
+    fetch(`/getmembername/${userId}`)
+        .then(response => response.text())
+        .then(userName => {
+
+            return fetch(`/deleteteammember/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('Member was successfully deleted');
+                    return fetch('/mainpage/teammembers');
+                }
+            })
+            .then(updatedResponse => updatedResponse.json())
+            .then(data => {
+                
+                updateMemberList(data.members);
+
+
+                if (stompClient && stompClient.connected) {
+
+                    const chatMessage = {
+                        sender: userName,
+                        type: 'LEAVE'
+                    };
+
+                    stompClient.send("/app/teamdeleted", {}, userId.toString());
+                    
+
+
+                    stompClient.send("/app/LEAVE", {}, JSON.stringify(chatMessage));
+                    
+
+
+                    chatMessage.type = 'REMOVE';
+                    stompClient.send("/app/chat.remove", {}, JSON.stringify(chatMessage));
+                    
+                }
+            });
+        });
+}
+
+function showChat() {
+    document.getElementById('chatContent').style.display = 'block';
+    document.getElementById('objectListContent').style.display = 'none';
+}
+
+function showObjectList() {
+    document.getElementById('objectListContent').style.display = 'block';
+    document.getElementById('chatContent').style.display = 'none';
+}
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    messageForm.addEventListener('submit', sendMessage);
+});
+
+
+</script>
+</body>
+
+</html>
