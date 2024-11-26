@@ -39,3 +39,43 @@ Admin Controls: Add or remove members from your team.
 ## Team Chat
 ![App Screenshot](src/main/resources/static/screeenshots/teamChat.PNG)
 
+
+
+
+# Technologies Used in the Project
+
+This project utilizes the following technologies:
+
+## Core Technologies
+- **Java 17**: Programming language.
+- **Spring Boot 3.3.4**: Framework for building web applications.
+- **PostgreSQL**: Relational database.
+
+## Dependencies
+1. **Spring Boot Starter Web**  
+   - For creating REST APIs and web applications.
+
+2. **Spring Boot Starter Thymeleaf**  
+   - For working with HTML templates.
+
+3. **Spring Boot Starter Data JPA**  
+   - For database interactions using JPA (Hibernate).
+
+4. **Spring Boot Starter Security**  
+   - For implementing authentication and authorization.
+
+5. **Spring Boot Starter Validation**  
+   - For validating input data.
+
+6. **Spring Boot Starter Websocket**  
+   - For real-time bidirectional communication via WebSocket.
+
+7. **Thymeleaf Extras Spring Security 6**  
+   - For integrating Spring Security features into Thymeleaf templates.
+
+8. **PostgreSQL JDBC Driver**  
+   - For connecting to the PostgreSQL database.
+
+## Tools and Build
+- **Maven**: Dependency and build management tool.
+- **Spring Boot Maven Plugin**: Simplifies building and running Spring Boot applications.
