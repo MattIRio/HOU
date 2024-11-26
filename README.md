@@ -24,4 +24,4 @@ Admin Controls: Add or remove members from your team.
 
 ## Screenshots
 
-![App Screenshot](screeenshots/Login.png)
+![App Screenshot](static/screenshots/Login.png)
