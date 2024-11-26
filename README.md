@@ -24,4 +24,18 @@ Admin Controls: Add or remove members from your team.
 
 ## Screenshots
 
+## Login Page
 ![App Screenshot](src/main/resources/static/screeenshots/Login.PNG)
+
+## Registration page
+![App Screenshot](src/main/resources/static/screeenshots/Register.PNG)
+
+## Main Page
+![App Screenshot](src/main/resources/static/screeenshots/Main page.PNG)
+
+## Team List
+![App Screenshot](src/main/resources/static/screeenshots/team list.PNG)
+
+## Team Chat
+![App Screenshot](src/main/resources/static/screeenshots/team chat.PNG)
+
