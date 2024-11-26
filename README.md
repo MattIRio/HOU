@@ -31,11 +31,11 @@ Admin Controls: Add or remove members from your team.
 ![App Screenshot](src/main/resources/static/screeenshots/Register.PNG)
 
 ## Main Page
-![App Screenshot](src/main/resources/static/screeenshots/Main page.PNG)
+![App Screenshot](src/main/resources/static/screeenshots/MainPage.PNG)
 
 ## Team List
-![App Screenshot](src/main/resources/static/screeenshots/team list.PNG)
+![App Screenshot](src/main/resources/static/screeenshots/teamList.PNG)
 
 ## Team Chat
-![App Screenshot](src/main/resources/static/screeenshots/team chat.PNG)
+![App Screenshot](src/main/resources/static/screeenshots/teamChat.PNG)
 
