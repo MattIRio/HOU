@@ -19,6 +19,9 @@ Team Management: Accept or reject team applications.
 Chat: Communicate with your team in a dedicated chat.
 
 Admin Controls: Add or remove members from your team.
+
+## The app does not adapt well to phones and small screens.
+
 ## Screenshots
 
-![App Screenshot](images/main)
+![App Screenshot](screeenshots/Login)
